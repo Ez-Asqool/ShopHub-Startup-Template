@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using myshop.Domain.Entities;
 using myshop.Entities.Models;
 using System.Diagnostics;
 

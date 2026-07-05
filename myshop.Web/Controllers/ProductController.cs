@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using myshop.DataAccess;
+using myshop.Domain.Entities;
 using myshop.Entities.Models;
-using myshop.Entities.ViewModels;
+using myshop.Infrastructure.Data;
+using myshop.Web.ViewModels;
 
 namespace myshop.Web.Areas.Admin.Controllers
 {
@@ -168,7 +169,6 @@ namespace myshop.Web.Areas.Admin.Controllers
 
             return Json(new { success = true, message = "file has been Deleted" });
         }
-
 
     }
 }

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Category>
+﻿@using myshop.Domain.Entities
+@model IEnumerable<Category>
 
 @{
     ViewBag.PageTitle = "Category Management";
@@ -119,7 +120,7 @@
     </div>
 
     <div class="top-btn">
-        <a class="btn btn-primary" href="/Admin/Category/Create">
+        <a class="btn btn-primary" href="/Category/Create">
             <i class="fa-solid fa-circle-plus me-1"></i> Create Category
         </a>
     </div>
