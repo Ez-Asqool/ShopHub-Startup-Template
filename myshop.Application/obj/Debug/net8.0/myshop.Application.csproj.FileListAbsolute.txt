@@ -1,0 +1,16 @@
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\bin\Debug\net8.0\myshop.Application.deps.json
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\bin\Debug\net8.0\myshop.Application.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\bin\Debug\net8.0\myshop.Application.pdb
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\bin\Debug\net8.0\myshop.Domain.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\bin\Debug\net8.0\myshop.Domain.pdb
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.csproj.AssemblyReference.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.AssemblyInfoInputs.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.AssemblyInfo.cs
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.csproj.CoreCompileInputs.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.sourcelink.json
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.A.9B70D382.Up2Date
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\refint\myshop.Application.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\myshop.Application.pdb
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Application\obj\Debug\net8.0\ref\myshop.Application.dll

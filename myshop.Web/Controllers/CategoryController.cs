@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using myshop.DataAccess;
-using myshop.Entities.Models;
+using myshop.Domain.Entities;
+using myshop.Infrastructure.Data;
 
 namespace myshop.Web.Areas.Admin.Controllers
 {
@@ -12,7 +12,6 @@ namespace myshop.Web.Areas.Admin.Controllers
         {
             _context = context;
         }
-
         public IActionResult Index()
         {
             var categories = _context.Categories.ToList();
@@ -22,7 +21,6 @@ namespace myshop.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-
             return View();
         }
 
