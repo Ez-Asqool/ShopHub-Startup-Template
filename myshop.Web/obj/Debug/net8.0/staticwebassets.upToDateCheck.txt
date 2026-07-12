@@ -43,6 +43,7 @@ wwwroot\Images\Products\40400314-7c8b-4bdb-b7b7-cec4f0cb861d.png
 wwwroot\Images\Products\42af8ba8-65df-417b-908c-ffb6cfcdfc0c.jpg
 wwwroot\Images\Products\4a2b378c-d4db-4312-b241-03d278e97c59.jpg
 wwwroot\Images\Products\4c4284fe-3fed-4d26-953a-d12762d3e240.jpg
+wwwroot\Images\Products\4e81dc0a-e2d2-4e6f-98e7-e95a185e770b.png
 wwwroot\Images\Products\4eb463ee-d056-4ff7-94a0-bc2418c1f866.png
 wwwroot\Images\Products\5f4d61ba-5f02-4a22-8305-1148a341710f.jpg
 wwwroot\Images\Products\634c1c6c-c82f-48f2-b186-db558a0fff53.jpg

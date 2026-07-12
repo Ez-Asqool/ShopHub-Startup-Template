@@ -565,6 +565,17 @@ D:\visual-studio-programs\E-Commerce-Startup-Template\ShopHub-Startup-Template\m
 D:\visual-studio-programs\E-Commerce-Startup-Template\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.pdb
 D:\visual-studio-programs\E-Commerce-Startup-Template\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.genruntimeconfig.cache
 D:\visual-studio-programs\E-Commerce-Startup-Template\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\ref\myshop.Web.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.csproj.AssemblyReference.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.GeneratedMSBuildEditorConfig.editorconfig
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.AssemblyInfoInputs.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.AssemblyInfo.cs
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.csproj.CoreCompileInputs.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.MvcApplicationPartsAssemblyInfo.cs
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.MvcApplicationPartsAssemblyInfo.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.RazorAssemblyInfo.cache
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.RazorAssemblyInfo.cs
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.sourcelink.json
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\appsettings.Development.json
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\myshop.Web.staticwebassets.runtime.json
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\myshop.Web.staticwebassets.endpoints.json
@@ -671,7 +682,6 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\r
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Configuration.KeyPerFile.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Configuration.UserSecrets.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Configuration.Xml.dll
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.DependencyInjection.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Diagnostics.Abstractions.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Diagnostics.dll
@@ -688,7 +698,6 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\r
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Http.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Localization.Abstractions.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Localization.dll
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Logging.Abstractions.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Logging.Configuration.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Logging.Console.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Logging.Debug.dll
@@ -699,8 +708,6 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\r
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.ObjectPool.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Options.DataAnnotations.dll
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Options.dll
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.Primitives.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Extensions.WebEncoders.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.JSInterop.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\Microsoft.Net.Http.Headers.dll
@@ -731,7 +738,6 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\r
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Data.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Diagnostics.Contracts.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Diagnostics.Debug.dll
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Diagnostics.DiagnosticSource.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Diagnostics.EventLog.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Diagnostics.FileVersionInfo.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Diagnostics.Process.dll
@@ -870,6 +876,7 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\r
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Xml.XPath.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\System.Xml.XPath.XDocument.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\refs\WindowsBase.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\AutoMapper.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Azure.Core.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Azure.Identity.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Humanizer.dll
@@ -911,6 +918,7 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\M
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Microsoft.Identity.Client.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
@@ -932,6 +940,7 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\S
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.Composition.Runtime.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.Composition.TypedParts.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.Memory.Data.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.Runtime.Caching.dll
@@ -1003,17 +1012,6 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\m
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\myshop.Application.pdb
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\myshop.Infrastructure.pdb
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\myshop.Domain.pdb
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.csproj.AssemblyReference.cache
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\rpswa.dswa.cache.json
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.GeneratedMSBuildEditorConfig.editorconfig
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.AssemblyInfoInputs.cache
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.AssemblyInfo.cs
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.csproj.CoreCompileInputs.cache
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.MvcApplicationPartsAssemblyInfo.cs
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.MvcApplicationPartsAssemblyInfo.cache
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.RazorAssemblyInfo.cache
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.RazorAssemblyInfo.cs
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.sourcelink.json
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\rjimswa.dswa.cache.json
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
