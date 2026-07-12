@@ -1,25 +1,20 @@
-﻿@if(TempData["Create"] != null)
-{  
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+@if (TempData["Create"] != null)
+{
     <script>
-    toastr.success("@TempData["Create"]")
+        toastr.success("@TempData["Create"]")
     </script>
 }
-
 @if (TempData["Update"] != null)
 {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         toastr.info("@TempData["Update"]")
     </script>
 }
-
 @if (TempData["Delete"] != null)
 {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
         toastr.error("@TempData["Delete"]")
     </script>

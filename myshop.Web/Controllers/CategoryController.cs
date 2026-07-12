@@ -1,92 +1,110 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using myshop.Application.Services.Category;
+using myshop.Application.Services.Category.Dto;
 using myshop.Domain.Entities;
-using myshop.Infrastructure.Data;
 
 namespace myshop.Web.Areas.Admin.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
-            var categories = _context.Categories.ToList();
+            var categories = await _categoryService.GetAllCategoriesAsync();
             return View(categories);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View(new CategoryCreateDto());
         }
 
         [HttpPost]
-        public IActionResult Create(Category category)
+        public async Task<IActionResult> Create(CategoryCreateDto dto)
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
-                TempData["Create"] = "Item has Created Successfully";
-                return RedirectToAction("Index");
+                if (await _categoryService.CreateCategoryAsync(dto))
+                {
+                    TempData["Create"] = "Item has Created Successfully";
+                    return RedirectToAction("Index");
+                }
+                ModelState.AddModelError("Name", "A category with this name already exists.");
             }
-            return View(category);
+            return View(dto);
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null | id == 0)
-            {
-                NotFound();
-            }
-            var categoryIndb = _context.Categories.Find(id);
+            if (id == null || id == 0)
+                return NotFound();
 
-            return View(categoryIndb);
+            var dto = await _categoryService.GetCategoryForEditAsync(id.Value);
+            if (dto == null)
+                return NotFound();
+
+            return View(dto);
         }
 
         [HttpPost]
-        public IActionResult Edit(Category category)
+        public async Task<IActionResult> Edit(CategoryUpdateDto dto)
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(category);
+                var result = await _categoryService.UpdateCategoryAsync(dto);
 
-                _context.SaveChanges();
-                TempData["Update"] = "Data has Updated Successfully";
-                return RedirectToAction("Index");
+                switch (result)
+                {
+                    case CategoryOperationResult.Success:
+                        TempData["Update"] = "Data has Updated Successfully";
+                        return RedirectToAction("Index");
+
+                    case CategoryOperationResult.NotFound:
+                        ModelState.AddModelError("", "This category no longer exists. It may have been deleted.");
+                        break;
+
+                    case CategoryOperationResult.DuplicateName:
+                        ModelState.AddModelError("Name", "A category with this name already exists.");
+                        break;
+                }
             }
-            return View(category);
+            return View(dto);
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null | id == 0)
-            {
-                NotFound();
-            }
-            var categoryIndb = _context.Categories.Where(x => x.Id == id).FirstOrDefault();
+            if (id == null || id == 0)
+                return NotFound();
 
-            return View(categoryIndb);
+            var dto = await _categoryService.GetCategoryForEditAsync(id.Value);
+            if (dto == null)
+                return NotFound();
+
+            return View(dto);
         }
 
         [HttpPost]
-        public IActionResult DeleteCategory(int? id)
+        public async Task<IActionResult> DeleteCategory(int? id)
         {
-            var categoryIndb = _context.Categories.FirstOrDefault(x => x.Id == id);
-            if (categoryIndb == null)
+            if (id == null || id == 0)
+                return NotFound();
+
+            if (await _categoryService.DeleteCategoryAsync(id.Value))
             {
-                NotFound();
+                TempData["Delete"] = "Item has Deleted Successfully";
+                return RedirectToAction("Index");
             }
-            _context.Categories.Remove(categoryIndb);
-            _context.SaveChanges();
-            TempData["Delete"] = "Item has Deleted Successfully";
-            return RedirectToAction("Index");
+
+            return NotFound();
         }
     }
 }

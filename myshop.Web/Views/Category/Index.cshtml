@@ -1,5 +1,5 @@
-﻿@using myshop.Domain.Entities
-@model IEnumerable<Category>
+﻿@using myshop.Application.Services.Category.Dto
+@model IEnumerable<CategoryDto>
 
 @{
     ViewBag.PageTitle = "Category Management";
@@ -142,10 +142,10 @@
                     <td>@Html.Raw(item.Description)</td>
                     <td>@item.CreatedTime.ToString("dd MMM yyyy")</td>
                     <td>
-                        <a class="btn btn-success me-1" href="/Admin/Category/Edit/@item.Id">
+                        <a class="btn btn-success me-1" href="/Category/Edit/@item.Id">
                             <i class="fa-solid fa-pen-to-square"></i> Edit
                         </a>
-                        <a class="btn btn-danger" href="/Admin/Category/Delete/@item.Id">
+                        <a class="btn btn-danger" href="/Category/Delete/@item.Id">
                             <i class="fa-solid fa-trash"></i> Delete
                         </a>
                     </td>

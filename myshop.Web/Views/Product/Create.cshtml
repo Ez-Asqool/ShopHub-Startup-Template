@@ -1,5 +1,5 @@
 ﻿@using myshop.Web.ViewModels
-@model ProductVM
+@model ProductCreateVM
 
 @{
     ViewBag.PageTitle = "Product Management";
@@ -121,7 +121,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Product.Img" class="form-label">
+                    <label for="imgfile" class="form-label">
                         <i class="fa-solid fa-image me-1"></i> Product Image
                     </label>
                     <input type="file" name="file" id="imgfile" class="form-control" onchange="fillimg(event);" />
@@ -131,7 +131,7 @@
                     <label asp-for="Product.CategoryId" class="form-label">
                         <i class="fa-solid fa-list me-1"></i> Category
                     </label>
-                    <select asp-for="Product.CategoryId" class="form-control" asp-items="Model.CategoryList">
+                    <select asp-for="Product.CategoryId" class="form-control" asp-items="@Model.CategoryList">
                         <option disabled selected>-- Select Category --</option>
                     </select>
                     <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
