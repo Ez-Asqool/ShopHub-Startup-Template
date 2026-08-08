@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using myshop.Application.Common;
 using myshop.Application.Contracts;
 using myshop.Application.Services.Category.Dto;
 using myshop.Application.Services.Product.Dto;
@@ -14,22 +15,22 @@ namespace myshop.Application.Services.Product
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IImageService _imageService;
+        private readonly IFileService _fileService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        private const string ProductImageFolder = "Images/Products";
+        private const string ProductImageFolder = "uploads/products";
 
         public ProductService(
             IProductRepository productRepository,
             ICategoryRepository categoryRepository,
-            IImageService imageService,
+            IFileService fileService,
             IUnitOfWork unitOfWork,
             IMapper mapper)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
-            _imageService = imageService;
+            _fileService = fileService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -38,6 +39,34 @@ namespace myshop.Application.Services.Product
         {
             var products = await _productRepository.GetAllWithCategoryAsync();
             return _mapper.Map<IEnumerable<ProductDto>>(products);
+        }
+
+        public async Task<PagedResult<ProductDto>> GetProductsPagedAsync(string? search, string? sortBy, int? categoryId, int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1)
+                pageNumber = 1;
+
+            if (pageSize < 1)
+                pageSize = 6;
+
+            var (items, totalCount) = await _productRepository.GetPagedAsync(search, sortBy, categoryId, pageNumber, pageSize);
+
+            return new PagedResult<ProductDto>
+            {
+                Items = _mapper.Map<IEnumerable<ProductDto>>(items),
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+        public async Task<ProductDto?> GetProductByIdAsync(int id)
+        {
+            var product = await _productRepository.GetProductWithCategoryAsync(id);
+            if (product == null)
+                return null;
+
+            return _mapper.Map<ProductDto>(product);
         }
 
         public async Task<ProductUpdateDto?> GetProductForEditAsync(int id)
@@ -55,6 +84,24 @@ namespace myshop.Application.Services.Product
             return _mapper.Map<IEnumerable<CategoryLookupDto>>(categories);
         }
 
+        public async Task<ProductStatsDto> GetStatsAsync()
+        {
+            var products = await _productRepository.GetAllAsync();
+            var categories = await _categoryRepository.GetAllAsync();
+
+            var productList = products.ToList();
+            var totalProducts = productList.Count;
+            var catalogValue = productList.Sum(p => p.Price);
+
+            return new ProductStatsDto
+            {
+                TotalProducts = totalProducts,
+                CatalogValue = catalogValue,
+                AvgPrice = totalProducts > 0 ? catalogValue / totalProducts : 0,
+                CategoriesCount = categories.Count()
+            };
+        }
+
         public async Task<ProductOperationResult> CreateProductAsync(
             ProductCreateDto dto, Stream? imageStream, string? imageExtension)
         {
@@ -66,7 +113,15 @@ namespace myshop.Application.Services.Product
 
             if (imageStream != null && imageExtension != null)
             {
-                product.Img = await _imageService.SaveImageAsync(imageStream, imageExtension, ProductImageFolder);
+                var imageError = ValidateImage(imageStream, imageExtension, imageStream.Length);
+                if (imageError != null)
+                    return imageError.Value;
+
+                product.Img = await _fileService.SaveImageAsync(imageStream, imageExtension, ProductImageFolder);
+            }
+            else
+            {
+                product.Img = string.Empty;
             }
 
             await _productRepository.AddAsync(product);
@@ -87,10 +142,14 @@ namespace myshop.Application.Services.Product
 
             if (imageStream != null && imageExtension != null)
             {
-                if (!string.IsNullOrEmpty(existing.Img))
-                    _imageService.DeleteImage(existing.Img);
+                var imageError = ValidateImage(imageStream, imageExtension, imageStream.Length);
+                if (imageError != null)
+                    return imageError.Value;
 
-                dto.Img = await _imageService.SaveImageAsync(imageStream, imageExtension, ProductImageFolder);
+                if (!string.IsNullOrEmpty(existing.Img))
+                    _fileService.DeleteImage(existing.Img);
+
+                dto.Img = await _fileService.SaveImageAsync(imageStream, imageExtension, ProductImageFolder);
             }
             else
             {
@@ -110,11 +169,23 @@ namespace myshop.Application.Services.Product
                 return ProductOperationResult.NotFound;
 
             if (!string.IsNullOrEmpty(existing.Img))
-                _imageService.DeleteImage(existing.Img);
+                _fileService.DeleteImage(existing.Img);
 
             _productRepository.Remove(existing);
             await _unitOfWork.SaveChangesAsync();
             return ProductOperationResult.Success;
+        }
+
+        private ProductOperationResult? ValidateImage(Stream imageStream, string imageExtension, long imageSizeInBytes)
+        {
+            var validationResult = _fileService.ValidateImage(imageStream, imageExtension, imageSizeInBytes);
+            return validationResult switch
+            {
+                ImageValidationResult.InvalidExtension => ProductOperationResult.InvalidImageExtension,
+                ImageValidationResult.FileTooLarge => ProductOperationResult.InvalidImageSize,
+                ImageValidationResult.InvalidContent => ProductOperationResult.InvalidImageContent,
+                _ => null
+            };
         }
     }
 }

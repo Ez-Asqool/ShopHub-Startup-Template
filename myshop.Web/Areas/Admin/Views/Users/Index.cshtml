@@ -1,0 +1,104 @@
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = "Users management";
+}
+
+<div class="sh-stats-grid" id="statsGrid">
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Total users</div>
+        <div class="sh-stat-value" id="statTotal">—</div>
+        <div class="sh-stat-note" id="statTotalNote">&nbsp;</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Active</div>
+        <div class="sh-stat-value" id="statActive">—</div>
+        <div class="sh-stat-note">Can sign in right now</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Locked</div>
+        <div class="sh-stat-value" id="statLocked">—</div>
+        <div class="sh-stat-note" id="statLockedNote">&nbsp;</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Admins</div>
+        <div class="sh-stat-value" id="statAdmins">—</div>
+        <div class="sh-stat-note">Have full admin access</div>
+    </div>
+</div>
+
+<div class="sh-panel">
+    <div class="sh-toolbar">
+        <div class="sh-search">
+            <span class="sh-search-icon">&#8981;</span>
+            <input id="searchInput" class="sh-search-input" placeholder="Search username or email" autocomplete="off" />
+            <button type="button" id="clearSearchBtn" class="sh-search-clear" hidden>&#10005;</button>
+        </div>
+        <label class="sh-pagesize">
+            Role
+            <select id="roleSelect" class="sh-pagesize-select">
+                <option value="All">All roles</option>
+                <option value="Admin">Admin</option>
+                <option value="Customer">Customer</option>
+            </select>
+        </label>
+        <label class="sh-pagesize">
+            Show
+            <select id="pageSizeSelect" class="sh-pagesize-select">
+                <option value="6">6</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+            </select>
+        </label>
+        <button type="button" id="inviteBtn" class="sh-btn-primary">+ Invite user</button>
+    </div>
+
+    <div class="sh-filter-row">
+        <div class="sh-result-label" id="resultLabel">&nbsp;</div>
+        <div class="sh-chips" id="statusTabs">
+            <button type="button" class="sh-chip active" data-status="All">All</button>
+            <button type="button" class="sh-chip" data-status="Active">Active</button>
+            <button type="button" class="sh-chip" data-status="Locked">Locked</button>
+        </div>
+    </div>
+
+    <div class="sh-table-wrap">
+        <div class="sh-table-head sh-table-cols-users">
+            <div>Username</div>
+            <div>Email</div>
+            <div class="sh-col-center">Role</div>
+            <div class="sh-col-center">Status</div>
+            <div class="sh-col-center">Actions</div>
+        </div>
+        <div id="userRows"></div>
+    </div>
+
+    <div id="emptyState" class="sh-empty" hidden>
+        <div class="sh-empty-title">No users found</div>
+        <div class="sh-empty-sub">Adjust the search, role or status filters.</div>
+        <button type="button" id="resetFiltersBtn" class="sh-btn-primary" style="margin-left:0;">Reset filters</button>
+    </div>
+
+    <div class="sh-pagination">
+        <div class="sh-foot-label" id="footLabel">&nbsp;</div>
+        <div class="sh-page-controls">
+            <button type="button" id="prevPageBtn" class="sh-step-btn">Prev</button>
+            <div class="sh-page-controls" id="pageNumbers"></div>
+            <button type="button" id="nextPageBtn" class="sh-step-btn">Next</button>
+        </div>
+    </div>
+</div>
+
+<div id="deleteModalOverlay" class="sh-modal-overlay" hidden>
+    <div class="sh-modal sh-modal-sm">
+        <div class="sh-confirm-title">Delete this user?</div>
+        <p class="sh-confirm-sub" id="deleteSub"></p>
+        <div class="sh-confirm-actions">
+            <button type="button" id="cancelDeleteBtn" class="sh-btn-secondary">Keep it</button>
+            <button type="button" id="confirmDeleteBtn" class="sh-btn-danger">Delete</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin/users-admin.js" asp-append-version="true"></script>
+}

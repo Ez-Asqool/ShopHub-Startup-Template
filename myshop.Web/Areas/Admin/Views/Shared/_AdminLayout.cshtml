@@ -1,0 +1,111 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+
+    var navItems = new (string Label, string? Controller, string? Action, bool Enabled)[]
+    {
+        ("Overview", "Product", "Index", true),
+        ("Products", "Product", "Index", true),
+        ("Categories", "Category", "Index", true),
+        ("Users", "Users", "Index", true),
+        ("Orders", null, null, false),
+        ("Settings", null, null, false)
+    };
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>myShop Admin | @ViewBag.PageTitle</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/admin-modern.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="sh-shell">
+
+        <aside class="sh-sidebar">
+            <div class="sh-sidebar-glow"></div>
+
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="sh-brand">
+                <span class="sh-brand-mark"></span>
+                <span>Shop<span class="sh-brand-accent">Hub</span></span>
+                <span class="sh-admin-tag">Admin</span>
+            </a>
+
+            <nav class="sh-nav">
+                <div class="sh-nav-label">Manage</div>
+                @foreach (var item in navItems)
+                {
+                    var isActive = item.Enabled && string.Equals(currentController, item.Controller, StringComparison.OrdinalIgnoreCase);
+                    if (item.Enabled)
+                    {
+                        <a asp-area="Admin" asp-controller="@item.Controller" asp-action="@item.Action"
+                           class="sh-nav-btn @(isActive ? "active" : "")">
+                            <span>@item.Label</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="sh-nav-btn sh-nav-btn-soon" data-soon="@item.Label">
+                            <span>@item.Label</span>
+                            <span class="sh-nav-soon">Soon</span>
+                        </button>
+                    }
+                }
+            </nav>
+
+            <div class="sh-user-panel">
+                <span class="sh-user-avatar">@((User.Identity?.Name ?? "A").Substring(0, 1).ToUpper())</span>
+                <span class="sh-user-info">
+                    <span class="sh-user-name">@(User.Identity?.Name ?? "Administrator")</span>
+                    <span class="sh-user-role">Store owner</span>
+                </span>
+            </div>
+        </aside>
+
+        <main class="sh-main">
+            <header class="sh-header">
+                <div class="sh-header-text">
+                    <div class="sh-breadcrumb">Dashboard / @ViewBag.PageTitle</div>
+                    <h1 class="sh-title">@ViewBag.PageTitle</h1>
+                </div>
+                <div class="sh-header-actions">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="sh-link">View storefront &rarr;</a>
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="sh-logout-form">
+                        <button type="submit" class="sh-logout-btn">Log out</button>
+                    </form>
+                </div>
+            </header>
+
+            <div class="sh-content">
+                @RenderBody()
+            </div>
+        </main>
+
+    </div>
+
+    <div id="shToast" class="sh-toast" hidden></div>
+
+    <script>
+        document.querySelectorAll('[data-soon]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var toast = document.getElementById('shToast');
+                toast.textContent = btn.getAttribute('data-soon') + ' — coming soon';
+                toast.hidden = false;
+                toast.classList.add('show');
+                clearTimeout(window.__shToastTimer);
+                window.__shToastTimer = setTimeout(function () {
+                    toast.classList.remove('show');
+                    toast.hidden = true;
+                }, 1900);
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

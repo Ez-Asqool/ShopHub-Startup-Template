@@ -11,5 +11,7 @@ namespace myshop.Application.Contracts
     {
         Task<Product?> GetProductWithCategoryAsync(int id);
         Task<IEnumerable<Product>> GetAllWithCategoryAsync();
+        Task<(IEnumerable<Product> Items, int TotalCount)> GetPagedAsync(
+            string? search, string? sortBy, int? categoryId, int pageNumber, int pageSize);
     }
 }

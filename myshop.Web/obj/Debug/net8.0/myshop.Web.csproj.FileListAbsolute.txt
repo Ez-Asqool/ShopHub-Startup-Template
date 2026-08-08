@@ -1022,10 +1022,10 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\s
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\staticwebassets.build.json.cache
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\staticwebassets.development.json
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.csproj.Up2Date
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\refint\myshop.Web.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.pdb
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.genruntimeconfig.cache
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\ref\myshop.Web.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

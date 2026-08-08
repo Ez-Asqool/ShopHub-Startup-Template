@@ -1,0 +1,242 @@
+@model myshop.Web.ViewModels.RegisterVM
+@{
+    Layout = null;
+    ViewData["Title"] = "ShopHub — Register";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+    <style>
+        html, body { margin: 0; padding: 0; background: oklch(0.44 0.12 268); }
+        * { box-sizing: border-box; }
+        a { color: oklch(0.52 0.13 285); text-decoration: none; }
+        a:hover { color: oklch(0.42 0.13 285); }
+        button { font-family: inherit; }
+
+        @@keyframes shDrift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+        @@keyframes shUp { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: translateY(0) } }
+        @@keyframes shGlow { 0%, 100% { opacity: 0.45; transform: scale(1) } 50% { opacity: 0.85; transform: scale(1.08) } }
+        @@keyframes shSlide { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+
+        .sh-auth-page { min-height: 100vh; font-family: Poppins, 'Helvetica Neue', sans-serif; color: oklch(0.98 0.01 268); background: linear-gradient(120deg, oklch(0.46 0.13 265) 0%, oklch(0.52 0.11 285) 38%, oklch(0.60 0.10 320) 68%, oklch(0.50 0.12 258) 100%); background-size: 260% 260%; animation: shDrift 22s ease-in-out infinite; display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, 0.86fr); }
+
+        .sh-auth-left { position: relative; overflow: hidden; padding: 44px 56px; display: flex; flex-direction: column; min-width: 0; }
+        .sh-auth-marquee-wrap { position: absolute; top: 36%; left: -4%; right: -4%; overflow: hidden; opacity: 0.08; pointer-events: none; }
+        .sh-auth-marquee { display: flex; width: max-content; animation: shSlide 26s linear infinite; font-size: 150px; font-weight: 800; letter-spacing: -0.04em; white-space: nowrap; }
+        .sh-auth-brand { position: relative; display: flex; align-items: center; gap: 10px; font-size: 25px; font-weight: 700; letter-spacing: -0.02em; color: oklch(0.98 0.01 268); animation: shUp 0.7s ease-out both; }
+        .sh-auth-brand-dot { width: 34px; height: 34px; border-radius: 11px; background: oklch(0.92 0.17 118); display: inline-block; }
+        .sh-accent { color: oklch(0.92 0.17 118); }
+
+        .sh-auth-hero { position: relative; margin: auto 0; padding: 40px 0; }
+        .sh-auth-eyebrow { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); border: 1px solid oklch(0.92 0.17 118 / 0.5); border-radius: 999px; padding: 8px 15px; margin-bottom: 26px; white-space: nowrap; line-height: 1.2; animation: shUp 0.7s 0.06s ease-out both; }
+        .sh-auth-h1 { font-size: 58px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin: 0 0 20px; max-width: 14ch; text-wrap: balance; animation: shUp 0.8s 0.14s ease-out both; }
+        .sh-auth-lead { font-size: 16px; line-height: 1.7; color: oklch(0.92 0.02 268 / 0.78); max-width: 40ch; margin: 0 0 36px; text-wrap: pretty; animation: shUp 0.8s 0.22s ease-out both; }
+        .sh-auth-checklist { display: flex; flex-direction: column; gap: 14px; animation: shUp 0.8s 0.3s ease-out both; }
+        .sh-auth-check-item { display: flex; align-items: center; gap: 12px; font-size: 14.5px; color: oklch(0.94 0.01 268 / 0.9); }
+        .sh-auth-check-icon { width: 22px; height: 22px; flex: none; border-radius: 999px; background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); font-size: 12px; display: flex; align-items: center; justify-content: center; }
+
+        .sh-auth-glow { position: absolute; bottom: -70px; right: -60px; width: 320px; height: 320px; border-radius: 999px; background: radial-gradient(circle, oklch(0.92 0.17 118 / 0.32) 0%, transparent 66%); animation: shGlow 7s ease-in-out infinite; pointer-events: none; }
+        .sh-auth-copyright { position: relative; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.9 0.02 268 / 0.5); }
+
+        .sh-auth-right { background: oklch(0.975 0.006 280); color: oklch(0.24 0.02 268); display: flex; align-items: center; justify-content: center; padding: 44px 40px; min-width: 0; }
+        .sh-auth-card { width: 100%; max-width: 410px; animation: shUp 0.75s 0.1s cubic-bezier(0.2,0.9,0.3,1) both; }
+
+        .sh-auth-tabs { display: flex; gap: 4px; padding: 4px; background: oklch(0.94 0.01 280); border-radius: 999px; margin-bottom: 30px; }
+        .sh-auth-tab { flex: 1; text-align: center; font-size: 13.5px; font-weight: 500; padding: 11px; border-radius: 999px; color: oklch(0.5 0.02 280); }
+        .sh-auth-tab:hover { color: oklch(0.3 0.02 268); }
+        .sh-auth-tab.active { font-weight: 600; background: oklch(1 0 0); color: oklch(0.24 0.02 268); box-shadow: 0 2px 6px oklch(0.3 0.04 280 / 0.16); }
+
+        .sh-auth-title { font-size: 32px; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 8px; }
+        .sh-auth-subtitle { font-size: 14px; color: oklch(0.5 0.02 280); margin: 0 0 26px; }
+
+        .sh-form-body { display: flex; flex-direction: column; gap: 15px; }
+        .sh-form-group { display: flex; flex-direction: column; gap: 8px; }
+        .sh-form-group label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.5 0.02 280); }
+        .sh-form-input { font-family: Poppins, sans-serif; font-size: 14.5px; padding: 15px 16px; border-radius: 13px; border: 1px solid oklch(0.88 0.012 280); background: oklch(1 0 0); outline: none; color: oklch(0.24 0.02 268); transition: border-color 0.2s ease, box-shadow 0.2s ease; width: 100%; }
+        .sh-form-input:focus { border-color: oklch(0.52 0.13 285); box-shadow: 0 0 0 4px oklch(0.52 0.13 285 / 0.12); }
+        .sh-form-input.input-validation-error { border-color: oklch(0.7 0.16 25); }
+        .sh-field-error { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: oklch(0.52 0.19 25); }
+
+        .sh-pw-wrap { position: relative; display: flex; }
+        .sh-pw-wrap .sh-form-input { padding-right: 82px; }
+        .sh-pw-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 11px; border-radius: 999px; border: none; background: oklch(0.94 0.01 280); color: oklch(0.42 0.03 280); cursor: pointer; }
+        .sh-pw-toggle:hover { background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); }
+
+        .sh-pw-meter-row { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
+        .sh-pw-meter-track { flex: 1; height: 5px; border-radius: 999px; background: oklch(0.91 0.012 280); overflow: hidden; }
+        .sh-pw-meter-fill { display: block; height: 100%; border-radius: 999px; width: 0%; background: oklch(0.91 0.012 280); transition: width 0.3s ease, background 0.3s ease; }
+        .sh-pw-meter-label { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.5 0.02 280); white-space: nowrap; }
+
+        .sh-terms-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; color: oklch(0.42 0.03 280); cursor: pointer; margin-top: 2px; }
+        .sh-terms-row input { width: 16px; height: 16px; margin-top: 1px; flex: none; accent-color: oklch(0.48 0.13 268); cursor: pointer; }
+
+        .sh-form-error-box { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: oklch(0.52 0.19 25); background: oklch(0.96 0.03 25); border: 1px solid oklch(0.86 0.07 25); border-radius: 11px; padding: 12px 14px; }
+        .sh-form-error-box ul { margin: 0; padding-left: 18px; }
+        .validation-summary-valid { display: none; }
+        .field-validation-valid { display: none; }
+        .field-validation-error { color: oklch(0.52 0.19 25); }
+
+        .sh-submit-btn { margin-top: 4px; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 17px; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
+        .sh-submit-btn:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-submit-btn:active { transform: scale(0.98); }
+
+        .sh-auth-footer-link { text-align: center; font-size: 13.5px; color: oklch(0.5 0.02 280); margin-top: 6px; }
+        .sh-auth-footer-link a { font-weight: 600; }
+
+        @@media (max-width: 860px) {
+            .sh-auth-page { grid-template-columns: 1fr; }
+            .sh-auth-left { padding: 34px 28px; min-height: 320px; }
+            .sh-auth-h1 { font-size: 40px; }
+            .sh-auth-hero { margin: 24px 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="sh-auth-page">
+
+    <section class="sh-auth-left">
+        <div class="sh-auth-marquee-wrap">
+            <div class="sh-auth-marquee">
+                <span style="padding-right: 60px;">SHOPHUB &middot; JOIN THE HUB &middot;&nbsp;</span>
+                <span style="padding-right: 60px;">SHOPHUB &middot; JOIN THE HUB &middot;&nbsp;</span>
+            </div>
+        </div>
+
+        <a asp-controller="Home" asp-action="Index" class="sh-auth-brand">
+            <span class="sh-auth-brand-dot"></span>
+            <span>Shop<span class="sh-accent">Hub</span></span>
+        </a>
+
+        <div class="sh-auth-hero">
+            <div class="sh-auth-eyebrow">Free to join — always</div>
+            <h1 class="sh-auth-h1">Create your<br /><span class="sh-accent">ShopHub account.</span></h1>
+            <p class="sh-auth-lead">One account for faster checkout, order tracking, saved carts and a hub full of curated picks.</p>
+            <div class="sh-auth-checklist">
+                <div class="sh-auth-check-item"><span class="sh-auth-check-icon">&check;</span>Two-tap checkout on every order</div>
+                <div class="sh-auth-check-item"><span class="sh-auth-check-icon">&check;</span>Saved carts synced across devices</div>
+                <div class="sh-auth-check-item"><span class="sh-auth-check-icon">&check;</span>Early access to every new drop</div>
+            </div>
+        </div>
+
+        <div class="sh-auth-glow"></div>
+        <div class="sh-auth-copyright">&copy; @DateTime.Now.Year ShopHub</div>
+    </section>
+
+    <section class="sh-auth-right">
+        <div class="sh-auth-card">
+            <div class="sh-auth-tabs">
+                <a asp-controller="Account" asp-action="Login" class="sh-auth-tab">Log in</a>
+                <span class="sh-auth-tab active">Register</span>
+            </div>
+
+            <h2 class="sh-auth-title">Register</h2>
+            <p class="sh-auth-subtitle">Takes about thirty seconds.</p>
+
+            <form asp-controller="Account" asp-action="Register" method="post" class="sh-form-body" novalidate>
+                <div asp-validation-summary="ModelOnly" class="sh-form-error-box"></div>
+
+                <div class="sh-form-group">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="sh-form-input" placeholder="Jane Cooper" autocomplete="name" />
+                    <span asp-validation-for="Name" class="sh-field-error"></span>
+                </div>
+
+                <div class="sh-form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="sh-form-input" placeholder="you@example.com" autocomplete="username" />
+                    <span asp-validation-for="Email" class="sh-field-error"></span>
+                </div>
+
+                <div class="sh-form-group">
+                    <label asp-for="Password"></label>
+                    <span class="sh-pw-wrap">
+                        <input asp-for="Password" class="sh-form-input" placeholder="At least 6 characters" autocomplete="new-password" id="Password" />
+                        <button type="button" class="sh-pw-toggle" id="pwToggle">Show</button>
+                    </span>
+                    <span class="sh-pw-meter-row">
+                        <span class="sh-pw-meter-track"><span class="sh-pw-meter-fill" id="pwMeterFill"></span></span>
+                        <span class="sh-pw-meter-label" id="pwMeterLabel">—</span>
+                    </span>
+                    <span asp-validation-for="Password" class="sh-field-error"></span>
+                </div>
+
+                <div class="sh-form-group">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input asp-for="ConfirmPassword" class="sh-form-input" placeholder="Re-enter your password" autocomplete="new-password" id="ConfirmPassword" />
+                    <span asp-validation-for="ConfirmPassword" class="sh-field-error"></span>
+                    <span class="sh-field-error" id="pwMismatchHint" style="display:none;">Passwords don't match</span>
+                </div>
+
+                <label class="sh-terms-row">
+                    <input type="checkbox" required />
+                    <span>I agree to the Terms and Privacy Policy.</span>
+                </label>
+
+                <button type="submit" class="sh-submit-btn">Create account</button>
+
+                <div class="sh-auth-footer-link">Already have an account? <a asp-controller="Account" asp-action="Login">Log in</a></div>
+            </form>
+        </div>
+    </section>
+
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    (function () {
+        var pwInput = document.getElementById('Password');
+        var confirmInput = document.getElementById('ConfirmPassword');
+        var toggleBtn = document.getElementById('pwToggle');
+        var meterFill = document.getElementById('pwMeterFill');
+        var meterLabel = document.getElementById('pwMeterLabel');
+        var mismatchHint = document.getElementById('pwMismatchHint');
+
+        var labels = ['—', 'Weak', 'Fair', 'Good', 'Strong'];
+        var colors = ['oklch(0.91 0.012 280)', 'oklch(0.62 0.19 25)', 'oklch(0.75 0.15 70)', 'oklch(0.72 0.14 140)', 'oklch(0.62 0.16 145)'];
+
+        function score(pw) {
+            var s = 0;
+            if (pw.length >= 8) s++;
+            if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
+            if (/[0-9]/.test(pw)) s++;
+            if (/[^A-Za-z0-9]/.test(pw)) s++;
+            return s;
+        }
+
+        function updateMeter() {
+            var pw = pwInput.value;
+            var s = score(pw);
+            var pct = pw ? (s / 4) * 100 : 0;
+            meterFill.style.width = pct + '%';
+            meterFill.style.background = colors[s];
+            meterLabel.textContent = labels[s];
+        }
+
+        function updateMismatch() {
+            var mismatch = confirmInput.value.length > 0 && confirmInput.value !== pwInput.value;
+            mismatchHint.style.display = mismatch ? 'inline' : 'none';
+        }
+
+        toggleBtn.addEventListener('click', function () {
+            var show = pwInput.type === 'password';
+            pwInput.type = show ? 'text' : 'password';
+            confirmInput.type = show ? 'text' : 'password';
+            toggleBtn.textContent = show ? 'Hide' : 'Show';
+        });
+
+        pwInput.addEventListener('input', function () { updateMeter(); updateMismatch(); });
+        confirmInput.addEventListener('input', updateMismatch);
+
+        updateMeter();
+    })();
+</script>
+</body>
+</html>

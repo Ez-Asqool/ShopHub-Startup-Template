@@ -24,5 +24,40 @@ namespace myshop.Infrastructure.Repositories
 
         public async Task<IEnumerable<Product>> GetAllWithCategoryAsync()
             => await _db.Products.Include(p => p.Category).ToListAsync();
+
+        public async Task<(IEnumerable<Product> Items, int TotalCount)> GetPagedAsync(
+            string? search, string? sortBy, int? categoryId, int pageNumber, int pageSize)
+        {
+            IQueryable<Product> query = _db.Products.Include(p => p.Category);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(search) ||
+                    p.Description.Contains(search));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            query = sortBy switch
+            {
+                "name_desc" => query.OrderByDescending(p => p.Name),
+                "price_asc" => query.OrderBy(p => p.Price),
+                "price_desc" => query.OrderByDescending(p => p.Price),
+                _ => query.OrderBy(p => p.Name)
+            };
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }

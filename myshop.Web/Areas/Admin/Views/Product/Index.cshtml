@@ -1,0 +1,165 @@
+@using myshop.Application.Services.Category.Dto
+@model IEnumerable<CategoryLookupDto>
+
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = "Products management";
+}
+
+<div class="sh-stats-grid" id="statsGrid">
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Total products</div>
+        <div class="sh-stat-value" id="statTotalProducts">—</div>
+        <div class="sh-stat-note" id="statTotalProductsNote">&nbsp;</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Catalog value</div>
+        <div class="sh-stat-value" id="statCatalogValue">—</div>
+        <div class="sh-stat-note">Sum of list prices</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Avg. price</div>
+        <div class="sh-stat-value" id="statAvgPrice">—</div>
+        <div class="sh-stat-note">Across all products</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Categories</div>
+        <div class="sh-stat-value" id="statCategories">—</div>
+        <div class="sh-stat-note">Available for products</div>
+    </div>
+</div>
+
+<div class="sh-panel">
+    <div class="sh-toolbar">
+        <div class="sh-search">
+            <span class="sh-search-icon">&#8981;</span>
+            <input id="searchInput" class="sh-search-input" placeholder="Search name, description or SKU" autocomplete="off" />
+            <button type="button" id="clearSearchBtn" class="sh-search-clear" hidden>&#10005;</button>
+        </div>
+        <label class="sh-pagesize">
+            Show
+            <select id="pageSizeSelect" class="sh-pagesize-select">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+            </select>
+        </label>
+        <button type="button" id="openAddBtn" class="sh-btn-primary">+ Add product</button>
+    </div>
+
+    <div class="sh-filter-row">
+        <div class="sh-result-label" id="resultLabel">&nbsp;</div>
+        <div class="sh-chips" id="categoryChips">
+            <button type="button" class="sh-chip active" data-category-id="">All</button>
+            @foreach (var c in Model)
+            {
+                <button type="button" class="sh-chip" data-category-id="@c.Id">@c.Name</button>
+            }
+        </div>
+    </div>
+
+    <div class="sh-table-wrap">
+        <div class="sh-table-head sh-table-cols">
+            <div class="sh-col-center">Image</div>
+            <div>Name</div>
+            <div>Description</div>
+            <div class="sh-col-center">Price</div>
+            <div class="sh-col-center">Category</div>
+            <div class="sh-col-center">Actions</div>
+        </div>
+        <div id="productRows"></div>
+    </div>
+
+    <div id="emptyState" class="sh-empty" hidden>
+        <div class="sh-empty-title">No products found</div>
+        <div class="sh-empty-sub">Try a different search or category filter.</div>
+        <button type="button" id="emptyAddBtn" class="sh-btn-primary" style="margin-left:0;">+ Add product</button>
+    </div>
+
+    <div class="sh-pagination">
+        <div class="sh-foot-label" id="footLabel">&nbsp;</div>
+        <div class="sh-page-controls">
+            <button type="button" id="prevPageBtn" class="sh-step-btn">Prev</button>
+            <div class="sh-page-controls" id="pageNumbers"></div>
+            <button type="button" id="nextPageBtn" class="sh-step-btn">Next</button>
+        </div>
+    </div>
+</div>
+
+<div id="productModalOverlay" class="sh-modal-overlay" hidden>
+    <div class="sh-modal" id="productModal">
+        <div class="sh-modal-head">
+            <div>
+                <div class="sh-modal-kicker" id="formKicker">New product</div>
+                <h3 class="sh-modal-title" id="formTitle">Add a product</h3>
+            </div>
+            <button type="button" class="sh-modal-close" id="closeFormBtn">&#10005;</button>
+        </div>
+
+        <form id="productForm" class="sh-form">
+            <input type="hidden" id="productId" name="id" value="" />
+            <input type="hidden" id="existingImg" name="Img" value="" />
+
+            <div class="sh-form-row-img">
+                <div class="sh-image-upload" id="imageUploadBox">
+                    <img id="imagePreview" src="" alt="" hidden />
+                    <span class="sh-image-upload-hint" id="imageUploadHint">Click to choose<br />a product image</span>
+                </div>
+                <input type="file" id="imageInput" name="file" accept=".jpg,.jpeg,.png,.webp" hidden />
+                <div class="sh-form-field">
+                    <span class="sh-label">Image</span>
+                    <span class="sh-hint">JPG, PNG or WEBP, up to 2&nbsp;MB. Optional — a placeholder is shown until you upload one.</span>
+                </div>
+            </div>
+
+            <label class="sh-form-field">
+                <span class="sh-label">Name</span>
+                <input id="fieldName" name="Name" class="sh-input" placeholder="Velocity Runner" />
+            </label>
+
+            <label class="sh-form-field">
+                <span class="sh-label">Description</span>
+                <textarea id="fieldDescription" name="Description" rows="3" class="sh-textarea" placeholder="Short selling description shown on the product card."></textarea>
+            </label>
+
+            <div class="sh-form-grid">
+                <label class="sh-form-field">
+                    <span class="sh-label">Price (USD)</span>
+                    <input id="fieldPrice" name="Price" class="sh-input" placeholder="129.00" />
+                </label>
+                <label class="sh-form-field">
+                    <span class="sh-label">Category</span>
+                    <select id="fieldCategory" name="CategoryId" class="sh-select">
+                        <option value="">-- Select category --</option>
+                        @foreach (var c in Model)
+                        {
+                            <option value="@c.Id">@c.Name</option>
+                        }
+                    </select>
+                </label>
+            </div>
+
+            <div id="formError" class="sh-form-error" hidden></div>
+
+            <div class="sh-form-actions">
+                <button type="button" id="cancelFormBtn" class="sh-btn-secondary">Cancel</button>
+                <button type="submit" id="submitFormBtn" class="sh-btn-submit">Create product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="deleteModalOverlay" class="sh-modal-overlay" hidden>
+    <div class="sh-modal sh-modal-sm">
+        <div class="sh-confirm-title">Delete this product?</div>
+        <p class="sh-confirm-sub" id="deleteSub"></p>
+        <div class="sh-confirm-actions">
+            <button type="button" id="cancelDeleteBtn" class="sh-btn-secondary">Keep it</button>
+            <button type="button" id="confirmDeleteBtn" class="sh-btn-danger">Delete</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin/products-admin.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,81 @@
+@using myshop.Application.Common
+@using myshop.Application.Services.Product.Dto
+@model PagedResult<ProductDto>
+
+@{
+    ViewData["Title"] = "Browse Products";
+    var search = ViewBag.Search as string;
+    var sortBy = ViewBag.SortBy as string;
+    var totalPages = Model.PageSize > 0 ? (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize) : 0;
+}
+
+<h2 class="mb-4">Browse Products</h2>
+
+<form method="get" asp-action="Index" class="d-flex gap-2 mb-4">
+    <input type="text" name="search" value="@search" class="form-control" placeholder="Search by name or description..." style="max-width:320px;" />
+
+    <select name="sortBy" class="form-select" style="max-width:200px;">
+        <option value="name_asc" selected="@(sortBy == "name_asc" || string.IsNullOrEmpty(sortBy))">Name (A-Z)</option>
+        <option value="name_desc" selected="@(sortBy == "name_desc")">Name (Z-A)</option>
+        <option value="price_asc" selected="@(sortBy == "price_asc")">Price (Low-High)</option>
+        <option value="price_desc" selected="@(sortBy == "price_desc")">Price (High-Low)</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">Apply</button>
+
+    @if (!string.IsNullOrWhiteSpace(search) || !string.IsNullOrWhiteSpace(sortBy))
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+    }
+</form>
+
+@if (!Model.Items.Any())
+{
+    <p class="text-muted">No products found.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var product in Model.Items)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="~/@(string.IsNullOrEmpty(product.Img) ? "img/default-150x150.png" : product.Img)"
+                         class="card-img-top"
+                         style="height:180px;object-fit:contain;"
+                         alt="@product.Name" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text text-muted flex-grow-1">@product.Description</p>
+                        <p class="fw-bold">$@product.Price.ToString("N2")</p>
+
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <input type="hidden" name="quantity" value="1" />
+                            <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize" asp-route-search="@search" asp-route-sortBy="@sortBy">Previous</a>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@Model.PageSize" asp-route-search="@search" asp-route-sortBy="@sortBy">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.PageNumber >= totalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize" asp-route-search="@search" asp-route-sortBy="@sortBy">Next</a>
+            </li>
+        </ul>
+    </nav>
+}
