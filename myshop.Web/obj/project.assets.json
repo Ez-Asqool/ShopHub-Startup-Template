@@ -2079,6 +2079,7 @@
         "dependencies": {
           "AutoMapper": "16.2.0",
           "Microsoft.AspNet.Mvc": "5.3.0",
+          "Microsoft.Extensions.Caching.Memory": "8.0.1",
           "myshop.Domain": "1.0.0"
         },
         "compile": {

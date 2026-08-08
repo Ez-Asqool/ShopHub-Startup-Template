@@ -1,0 +1,249 @@
+@using Microsoft.AspNetCore.Identity
+@using myshop.Infrastructure.Identity
+@using myshop.Application.Contracts
+@using myshop.Application.Services.Category
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ICartService CartService
+@inject ICategoryService CategoryService
+@{
+    var isSignedIn = SignInManager.IsSignedIn(User);
+    var userName = isSignedIn ? UserManager.GetUserName(User) : null;
+    var cartCount = CartService.GetCart().Sum(c => c.Quantity);
+    var footerCategories = (await CategoryService.GetAllCategoriesAsync()).Take(3).ToList();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+    <style>
+        html, body { margin: 0; padding: 0; background: oklch(0.44 0.12 268); }
+        * { box-sizing: border-box; }
+        a { color: oklch(0.92 0.14 118); text-decoration: none; }
+        a:hover { color: oklch(0.97 0.06 118); }
+        button { font-family: inherit; }
+        img { max-width: 100%; display: block; }
+
+        @@keyframes shDrift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+        @@keyframes shUp { from { opacity: 0; transform: translateY(26px) } to { opacity: 1; transform: translateY(0) } }
+        @@keyframes shIn { from { opacity: 0; transform: translateY(40px) scale(0.96) } to { opacity: 1; transform: translateY(0) scale(1) } }
+        @@keyframes shFloat { 0%, 100% { transform: translateY(0) rotate(-4deg) } 50% { transform: translateY(-22px) rotate(-1deg) } }
+        @@keyframes shGlow { 0%, 100% { opacity: 0.5; transform: scale(1) } 50% { opacity: 0.85; transform: scale(1.06) } }
+        @@keyframes shSlide { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+        @@keyframes shPop { from { opacity: 0; transform: translate(-50%, 16px) } to { opacity: 1; transform: translate(-50%, 0) } }
+        @@keyframes shModal { from { opacity: 0; transform: translateY(18px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
+
+        .sh-page { min-height: 100vh; font-family: Poppins, 'Helvetica Neue', sans-serif; color: oklch(0.98 0.01 268); background: linear-gradient(120deg, oklch(0.46 0.13 265) 0%, oklch(0.52 0.11 285) 38%, oklch(0.60 0.10 320) 68%, oklch(0.50 0.12 258) 100%); background-size: 260% 260%; animation: shDrift 22s ease-in-out infinite; }
+
+        .sh-header { position: relative; z-index: 30; max-width: 1320px; margin: 0 auto; padding: 26px 44px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 32px; animation: shUp 0.7s ease-out both; }
+        .sh-brand { display: flex; align-items: center; gap: 10px; font-size: 25px; font-weight: 700; letter-spacing: -0.02em; color: oklch(0.98 0.01 268); }
+        .sh-brand-dot { width: 34px; height: 34px; border-radius: 11px; background: oklch(0.92 0.17 118); display: inline-block; }
+        .sh-accent { color: oklch(0.92 0.17 118); }
+        .sh-nav { display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 13.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+        .sh-nav a { color: oklch(0.9 0.02 268); }
+        .sh-nav a:first-child { color: oklch(0.98 0.01 268); }
+        .sh-header-actions { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; min-width: 0; }
+        .sh-search { display: flex; align-items: center; gap: 9px; background: oklch(1 0 0 / 0.14); border: 1px solid oklch(1 0 0 / 0.2); border-radius: 999px; padding: 9px 16px; width: 210px; min-width: 120px; flex: 0 1 210px; }
+        .sh-search input { border: none; outline: none; background: transparent; font-family: Poppins, sans-serif; font-size: 13px; color: oklch(0.99 0.01 268); width: 100%; }
+        .sh-search span { font-size: 13px; opacity: 0.8; }
+        .sh-btn-ghost { font-family: Poppins, sans-serif; font-size: 13px; font-weight: 500; padding: 10px 18px; border-radius: 999px; border: 1px solid oklch(1 0 0 / 0.28); background: transparent; color: oklch(0.98 0.01 268); cursor: pointer; white-space: nowrap; flex: none; }
+        .sh-btn-ghost:hover { background: oklch(1 0 0 / 0.16); }
+        .sh-btn-solid { font-family: Poppins, sans-serif; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 999px; border: none; background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); cursor: pointer; white-space: nowrap; flex: none; }
+        .sh-btn-solid:hover { background: oklch(0.97 0.15 118); }
+        .sh-hello { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; color: oklch(0.95 0.02 268); white-space: nowrap; }
+        .sh-cart-btn { position: relative; flex: none; width: 42px; height: 42px; border-radius: 999px; border: 1px solid oklch(1 0 0 / 0.28); background: oklch(1 0 0 / 0.12); color: oklch(0.98 0.01 268); cursor: pointer; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; }
+        .sh-cart-btn:hover { background: oklch(1 0 0 / 0.24); }
+        .sh-cart-badge { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+
+        .sh-footer { background: oklch(0.24 0.05 268); color: oklch(0.95 0.01 268); }
+        .sh-footer-inner { max-width: 1320px; margin: 0 auto; padding: 54px 44px; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; }
+        .sh-footer-brand { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+        .sh-footer-blurb { font-size: 13.5px; line-height: 1.7; color: oklch(0.85 0.01 268 / 0.7); max-width: 34ch; margin: 0; }
+        .sh-footer-col { display: flex; flex-direction: column; gap: 11px; font-size: 13.5px; }
+        .sh-footer-head { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.75 0.02 268 / 0.7); }
+        .sh-footer-col a, .sh-footer-col button { color: oklch(0.93 0.01 268); text-align: left; padding: 0; border: none; background: none; cursor: pointer; font-family: Poppins, sans-serif; font-size: 13.5px; }
+        .sh-footer-bottom { border-top: 1px solid oklch(1 0 0 / 0.1); padding: 18px 44px; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.8 0.01 268 / 0.55); }
+
+        .sh-toast { position: fixed; bottom: 30px; left: 50%; z-index: 95; background: oklch(0.92 0.17 118); color: oklch(0.26 0.08 130); padding: 14px 24px; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; animation: shPop 0.24s ease-out both; box-shadow: 0 18px 40px oklch(0.3 0.1 130 / 0.35); display: none; }
+
+        .sh-modal-overlay { display: none; position: fixed; inset: 0; z-index: 92; background: oklch(0.24 0.06 268 / 0.55); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 24px; }
+        .sh-modal-overlay.open { display: flex; }
+        .sh-modal { width: 400px; max-width: 100%; background: oklch(0.99 0.004 280); color: oklch(0.24 0.02 268); border-radius: 22px; padding: 32px; text-align: center; animation: shModal 0.26s cubic-bezier(0.2, 0.9, 0.3, 1) both; box-shadow: 0 40px 90px oklch(0.2 0.06 268 / 0.45); }
+
+        @@media (max-width: 900px) {
+            .sh-footer-inner { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+<div class="sh-page">
+
+    <header class="sh-header">
+        <a asp-controller="Home" asp-action="Index" class="sh-brand">
+            <span class="sh-brand-dot"></span>
+            <span>Shop<span class="sh-accent">Hub</span></span>
+        </a>
+        <nav class="sh-nav">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="shop">About us</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="shop">Shop</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="shop">Contact</a>
+        </nav>
+        <div class="sh-header-actions">
+            <div class="sh-search">
+                <span>⌕</span>
+                <input id="searchInput" placeholder="Search" autocomplete="off" />
+            </div>
+            @if (isSignedIn)
+            {
+                <span class="sh-hello">Hi, @userName</span>
+                <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                    <button type="submit" class="sh-btn-ghost">Log out</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="sh-btn-ghost">Log in</a>
+                <a asp-controller="Account" asp-action="Register" class="sh-btn-solid">Register</a>
+            }
+            <a asp-controller="Cart" asp-action="Index" class="sh-cart-btn">⛬
+                <span class="sh-cart-badge" id="cartBadge">@cartCount</span>
+            </a>
+        </div>
+    </header>
+
+    @RenderBody()
+
+    <footer class="sh-footer">
+        <div class="sh-footer-inner">
+            <div>
+                <div class="sh-footer-brand">Shop<span class="sh-accent">Hub</span></div>
+                <p class="sh-footer-blurb">One hub for the things you actually use. Curated, fairly priced, shipped fast.</p>
+            </div>
+            <div class="sh-footer-col">
+                <div class="sh-footer-head">Shop</div>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="shop">New in</a>
+                @foreach (var cat in footerCategories)
+                {
+                    <a asp-controller="Home" asp-action="Index" asp-fragment="shop">@cat.Name</a>
+                }
+            </div>
+            <div class="sh-footer-col">
+                <div class="sh-footer-head">Support</div>
+                <a asp-controller="Cart" asp-action="Index">Cart</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="shop">Shipping</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="shop">Returns</a>
+            </div>
+            <div class="sh-footer-col">
+                <div class="sh-footer-head">Account</div>
+                @if (isSignedIn)
+                {
+                    <span>Hi, @userName</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                        <button type="submit">Log out</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login">Log in</a>
+                    <a asp-controller="Account" asp-action="Register">Register</a>
+                }
+            </div>
+        </div>
+        <div class="sh-footer-bottom">&copy; @DateTime.Now.Year ShopHub</div>
+    </footer>
+
+    <div class="sh-toast" id="toast"></div>
+
+    <form id="antiForgeryForm" style="display:none;">
+        @Html.AntiForgeryToken()
+    </form>
+
+</div>
+
+<script>
+    window.ShopHub = (function () {
+        var cartCount = @cartCount;
+        var cartBadge = document.getElementById('cartBadge');
+        var toast = document.getElementById('toast');
+        var toastTimer = null;
+
+        function showToast(msg) {
+            clearTimeout(toastTimer);
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            toastTimer = setTimeout(function () { toast.style.display = 'none'; }, 1900);
+        }
+
+        function setCartCount(n) {
+            cartCount = Math.max(0, n);
+            cartBadge.textContent = cartCount;
+        }
+
+        function bumpCartCount(delta) {
+            setCartCount(cartCount + delta);
+        }
+
+        function getToken() {
+            return document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]').value;
+        }
+
+        async function postForm(url, fields) {
+            var fd = new FormData();
+            Object.keys(fields).forEach(function (k) { fd.append(k, fields[k]); });
+            fd.append('__RequestVerificationToken', getToken());
+            try {
+                var res = await fetch(url, { method: 'POST', body: fd });
+                return res.ok;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        async function addToCart(productId, name) {
+            var ok = await postForm('/Cart/AddToCart', { productId: productId, quantity: 1 });
+            if (ok) {
+                bumpCartCount(1);
+                showToast('Added — ' + name);
+            } else {
+                showToast('Could not add to cart');
+            }
+            return ok;
+        }
+
+        document.body.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-add-to-cart]');
+            if (!btn) return;
+            addToCart(btn.getAttribute('data-product-id'), btn.getAttribute('data-product-name'));
+        });
+
+        var searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key !== 'Enter') return;
+                if (!document.getElementById('productGrid')) {
+                    e.preventDefault();
+                    window.location.href = '/?search=' + encodeURIComponent(searchInput.value) + '#shop';
+                }
+            });
+        }
+
+        return {
+            showToast: showToast,
+            setCartCount: setCartCount,
+            bumpCartCount: bumpCartCount,
+            getToken: getToken,
+            postForm: postForm,
+            addToCart: addToCart
+        };
+    })();
+</script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

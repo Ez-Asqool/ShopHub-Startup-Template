@@ -1,0 +1,120 @@
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = "Categories management";
+}
+
+<div class="sh-stats-grid" id="statsGrid">
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Total categories</div>
+        <div class="sh-stat-value" id="statTotal">—</div>
+        <div class="sh-stat-note" id="statTotalNote">&nbsp;</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Newest</div>
+        <div class="sh-stat-value" id="statNewest">—</div>
+        <div class="sh-stat-note" id="statNewestNote">&nbsp;</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Avg. per category</div>
+        <div class="sh-stat-value" id="statAvg">—</div>
+        <div class="sh-stat-note">Products per category</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Empty categories</div>
+        <div class="sh-stat-value" id="statEmpty">—</div>
+        <div class="sh-stat-note" id="statEmptyNote">&nbsp;</div>
+    </div>
+</div>
+
+<div class="sh-panel">
+    <div class="sh-toolbar">
+        <div class="sh-search">
+            <span class="sh-search-icon">&#8981;</span>
+            <input id="searchInput" class="sh-search-input" placeholder="Search categories" autocomplete="off" />
+            <button type="button" id="clearSearchBtn" class="sh-search-clear" hidden>&#10005;</button>
+        </div>
+        <label class="sh-pagesize">
+            Sort
+            <select id="sortSelect" class="sh-pagesize-select">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="name">Name A&ndash;Z</option>
+                <option value="products">Most products</option>
+            </select>
+        </label>
+        <button type="button" id="openAddBtn" class="sh-btn-primary">+ Add category</button>
+    </div>
+
+    <div class="sh-filter-row">
+        <div class="sh-result-label" id="resultLabel">&nbsp;</div>
+    </div>
+
+    <div class="sh-table-wrap">
+        <div class="sh-table-head sh-table-cols-cat">
+            <div>Name</div>
+            <div>Description</div>
+            <div class="sh-col-center">Date Created</div>
+            <div class="sh-col-center">Actions</div>
+        </div>
+        <div id="categoryRows"></div>
+    </div>
+
+    <div id="emptyState" class="sh-empty" hidden>
+        <div class="sh-empty-title">No categories found</div>
+        <div class="sh-empty-sub">Try a different search, or create your first category.</div>
+        <button type="button" id="emptyAddBtn" class="sh-btn-primary" style="margin-left:0;">+ Add category</button>
+    </div>
+
+    <div class="sh-pagination">
+        <div class="sh-foot-label" id="footLabel">&nbsp;</div>
+        <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="sh-link">View products table &rarr;</a>
+    </div>
+</div>
+
+<div id="categoryModalOverlay" class="sh-modal-overlay" hidden>
+    <div class="sh-modal" id="categoryModal">
+        <div class="sh-modal-head">
+            <div>
+                <div class="sh-modal-kicker" id="formKicker">New category</div>
+                <h3 class="sh-modal-title" id="formTitle">Add a category</h3>
+            </div>
+            <button type="button" class="sh-modal-close" id="closeFormBtn">&#10005;</button>
+        </div>
+
+        <form id="categoryForm" class="sh-form">
+            <input type="hidden" id="categoryId" name="id" value="" />
+
+            <label class="sh-form-field">
+                <span class="sh-label">Name</span>
+                <input id="fieldName" name="Name" class="sh-input" placeholder="e.g. Outdoor" />
+            </label>
+
+            <label class="sh-form-field">
+                <span class="sh-label">Description</span>
+                <textarea id="fieldDescription" name="Description" rows="3" class="sh-textarea" placeholder="What belongs in this category and who it's for."></textarea>
+            </label>
+
+            <div id="formError" class="sh-form-error" hidden></div>
+
+            <div class="sh-form-actions">
+                <button type="button" id="cancelFormBtn" class="sh-btn-secondary">Cancel</button>
+                <button type="submit" id="submitFormBtn" class="sh-btn-submit">Create category</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="deleteModalOverlay" class="sh-modal-overlay" hidden>
+    <div class="sh-modal sh-modal-sm">
+        <div class="sh-confirm-title">Delete this category?</div>
+        <p class="sh-confirm-sub" id="deleteSub"></p>
+        <div class="sh-confirm-actions">
+            <button type="button" id="cancelDeleteBtn" class="sh-btn-secondary">Keep it</button>
+            <button type="button" id="confirmDeleteBtn" class="sh-btn-danger">Delete</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin/categories-admin.js" asp-append-version="true"></script>
+}

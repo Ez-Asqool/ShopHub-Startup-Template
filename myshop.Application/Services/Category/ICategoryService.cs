@@ -22,5 +22,7 @@ namespace myshop.Application.Services.Category
         Task<bool> CreateCategoryAsync(CategoryCreateDto dto);
         Task<CategoryOperationResult> UpdateCategoryAsync(CategoryUpdateDto dto);
         Task<bool> DeleteCategoryAsync(int id);
+        Task<IEnumerable<CategoryAdminDto>> GetCategoriesForAdminAsync(string? search, string? sort);
+        Task<CategoryStatsDto> GetStatsAsync();
     }
 }

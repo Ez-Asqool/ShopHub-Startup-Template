@@ -1,0 +1,340 @@
+@model myshop.Web.ViewModels.CartIndexVM
+@{
+    Layout = "_ShopHubLayout";
+    ViewData["Title"] = "ShopHub — Your cart";
+    var itemCount = Model.Items.Sum(i => i.Quantity);
+    var subtotal = Model.Items.Sum(i => i.Price * i.Quantity);
+}
+
+@section Styles {
+    <style>
+        .sh-crumb { max-width: 1320px; margin: 0 auto; padding: 22px 44px 54px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+        .sh-crumb-path { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); margin-bottom: 12px; animation: shUp 0.7s 0.08s ease-out both; }
+        .sh-crumb-title { font-size: 54px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin: 0; animation: shUp 0.7s 0.08s ease-out both; }
+        .sh-crumb-summary { font-size: 14.5px; color: oklch(0.92 0.02 268 / 0.78); animation: shUp 0.7s 0.16s ease-out both; }
+
+        .sh-cart-panel { background: oklch(0.975 0.006 280); color: oklch(0.24 0.02 268); border-radius: 42px 42px 0 0; padding: 46px 0 0; }
+        .sh-cart-layout { max-width: 1320px; margin: 0 auto; padding: 0 44px 70px; display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(280px, 0.85fr); gap: 30px; align-items: start; }
+
+        .sh-cart-table-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 20px; overflow: hidden; min-width: 0; }
+        .sh-cart-table-scroll { overflow-x: auto; overflow-y: hidden; }
+        .cart-row-grid { display: grid; grid-template-columns: minmax(240px, 2.4fr) minmax(80px, 0.7fr) 132px minmax(90px, 0.7fr) 116px; gap: 16px; align-items: center; min-width: 720px; }
+        .sh-cart-head-row { padding: 18px 24px; border-bottom: 1px solid oklch(0.92 0.01 280); background: oklch(0.98 0.005 280); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.5 0.03 280); }
+        .cart-row { padding: 20px 24px; border-bottom: 1px solid oklch(0.94 0.008 280); transition: background 0.2s ease; animation: shIn 0.55s ease-out both; }
+
+        .cart-row-product { display: flex; align-items: center; gap: 16px; min-width: 0; }
+        .cart-row-thumb { width: 84px; height: 84px; flex: none; border-radius: 14px; object-fit: contain; background-color: oklch(0.93 0.012 280); padding: 6px; }
+        .cart-row-info { min-width: 0; }
+        .cart-row-cat { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.52 0.13 285); margin-bottom: 5px; }
+        .cart-row-name { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+        .cart-row-sku { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.55 0.02 280); margin-top: 5px; }
+        .cart-row-unit { text-align: right; font-size: 14.5px; color: oklch(0.4 0.02 280); white-space: nowrap; }
+
+        .cart-qty-wrap { display: flex; align-items: center; justify-content: center; gap: 4px; background: oklch(0.965 0.006 280); border: 1px solid oklch(0.9 0.012 280); border-radius: 999px; padding: 4px; width: fit-content; margin: 0 auto; }
+        .cart-qty-btn { width: 30px; height: 30px; border-radius: 999px; border: none; background: transparent; color: oklch(0.3 0.02 268); font-size: 17px; line-height: 1; cursor: pointer; }
+        .cart-qty-btn:hover { background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); }
+        .cart-qty-val { font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; min-width: 22px; text-align: center; }
+
+        .cart-row-total { text-align: right; font-size: 17px; font-weight: 700; white-space: nowrap; }
+
+        .cart-remove-btn { justify-self: end; display: flex; align-items: center; gap: 7px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid oklch(0.89 0.012 280); background: transparent; color: oklch(0.5 0.03 280); cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
+        .cart-remove-btn:hover { background: oklch(0.58 0.19 25); border-color: oklch(0.58 0.19 25); color: oklch(0.99 0.01 25); }
+
+        .sh-cart-empty { display: none; padding: 78px 24px; text-align: center; }
+        .sh-cart-empty-icon { width: 74px; height: 74px; margin: 0 auto 20px; border-radius: 999px; background: oklch(0.95 0.012 280); display: flex; align-items: center; justify-content: center; font-size: 26px; color: oklch(0.5 0.03 280); }
+        .sh-cart-empty-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .sh-cart-empty-sub { font-size: 14px; color: oklch(0.5 0.02 280); margin-bottom: 24px; }
+        .sh-cart-empty-cta { display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 14px 28px; border-radius: 999px; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); }
+        .sh-cart-empty-cta:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+
+        .sh-cart-footer-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 20px 24px; background: oklch(0.98 0.005 280); border-top: 1px solid oklch(0.92 0.01 280); }
+        .sh-continue-link { font-size: 13px; font-weight: 500; color: oklch(0.42 0.03 280); }
+        .sh-continue-link:hover { color: oklch(0.48 0.13 268); }
+        .sh-clear-btn { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 20px; border-radius: 999px; border: 1px solid oklch(0.58 0.19 25 / 0.45); background: transparent; color: oklch(0.52 0.19 25); cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
+        .sh-clear-btn:hover { background: oklch(0.58 0.19 25); color: oklch(0.99 0.01 25); border-color: oklch(0.58 0.19 25); }
+
+        .sh-summary-aside { position: sticky; top: 24px; min-width: 0; display: flex; flex-direction: column; gap: 16px; animation: shIn 0.7s 0.2s ease-out both; }
+        .sh-summary-card { background: oklch(0.24 0.05 268); color: oklch(0.97 0.01 268); border-radius: 20px; padding: 26px; }
+        .sh-summary-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); margin-bottom: 20px; }
+        .sh-summary-rows { display: flex; flex-direction: column; gap: 13px; font-size: 14px; padding-bottom: 18px; border-bottom: 1px solid oklch(1 0 0 / 0.14); }
+        .sh-summary-row { display: flex; justify-content: space-between; gap: 12px; }
+        .sh-summary-row span:first-child { color: oklch(0.88 0.01 268 / 0.72); }
+        .sh-summary-total-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 20px 0 4px; }
+        .sh-summary-total-label { font-size: 15px; font-weight: 600; }
+        .sh-summary-total-amount { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; color: oklch(0.92 0.17 118); }
+        .sh-checkout-btn { margin-top: 20px; width: 100%; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 16px; border-radius: 999px; border: none; background: oklch(0.92 0.17 118); color: oklch(0.26 0.08 130); cursor: pointer; transition: transform 0.2s ease; }
+        .sh-checkout-btn:hover { background: oklch(0.98 0.15 118); }
+        .sh-checkout-btn:active { transform: scale(0.97); }
+        .sh-ship-note { margin-top: 14px; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.85 0.01 268 / 0.55); }
+
+        .sh-promo-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 20px; padding: 22px; }
+        .sh-promo-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.5 0.03 280); margin-bottom: 14px; }
+        .sh-promo-row { display: flex; gap: 8px; }
+        .sh-promo-input { flex: 1; min-width: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 13px 14px; border-radius: 11px; border: 1px solid oklch(0.89 0.012 280); background: oklch(0.985 0.004 280); outline: none; color: oklch(0.24 0.02 268); }
+        .sh-promo-input:focus { border-color: oklch(0.52 0.13 285); }
+        .sh-promo-btn { font-family: Poppins, sans-serif; font-size: 12.5px; font-weight: 600; padding: 13px 18px; border-radius: 11px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); cursor: pointer; white-space: nowrap; }
+        .sh-promo-btn:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+
+        .sh-confirm-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .sh-confirm-sub { font-size: 13.5px; color: oklch(0.5 0.02 280); margin: 0 0 26px; }
+        .sh-confirm-actions { display: flex; gap: 10px; }
+        .sh-confirm-keep { flex: 1; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 500; padding: 14px; border-radius: 999px; border: 1px solid oklch(0.88 0.012 280); background: transparent; color: oklch(0.3 0.02 268); cursor: pointer; }
+        .sh-confirm-keep:hover { background: oklch(0.95 0.008 280); }
+        .sh-confirm-clear { flex: 1; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 600; padding: 14px; border-radius: 999px; border: none; background: oklch(0.58 0.19 25); color: oklch(0.99 0.01 25); cursor: pointer; }
+        .sh-confirm-clear:hover { background: oklch(0.5 0.19 25); }
+
+        @@media (max-width: 900px) {
+            .sh-crumb-title { font-size: 38px; }
+            .sh-cart-layout { grid-template-columns: 1fr; }
+            .sh-summary-aside { position: static; }
+        }
+    </style>
+}
+
+<section class="sh-crumb">
+    <div>
+        <div class="sh-crumb-path"><a asp-controller="Home" asp-action="Index">Home</a> / Cart</div>
+        <h1 class="sh-crumb-title">Your cart</h1>
+    </div>
+    <div class="sh-crumb-summary" id="headerSummary">
+        @(Model.Items.Any()
+            ? $"{Model.Items.Count} product line{(Model.Items.Count == 1 ? "" : "s")} · {itemCount} item{(itemCount == 1 ? "" : "s")}"
+            : "Nothing here yet")
+    </div>
+</section>
+
+<section class="sh-cart-panel">
+    <div class="sh-cart-layout">
+
+        <div class="sh-cart-table-card">
+            <div class="sh-cart-table-scroll">
+                <div class="cart-row-grid sh-cart-head-row">
+                    <div>Product</div>
+                    <div style="text-align:right;">Unit price</div>
+                    <div style="text-align:center;">Quantity</div>
+                    <div style="text-align:right;">Total</div>
+                    <div></div>
+                </div>
+
+                <div id="cartRows">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="cart-row-grid cart-row" data-product-id="@item.ProductId" data-price="@item.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-qty="@item.Quantity" data-name="@item.ProductName">
+                            <div class="cart-row-product">
+                                <img class="cart-row-thumb" src="~/@(string.IsNullOrEmpty(item.ImageUrl) ? "img/default-150x150.png" : item.ImageUrl)" alt="@item.ProductName" />
+                                <div class="cart-row-info">
+                                    <div class="cart-row-cat">@item.CategoryName</div>
+                                    <div class="cart-row-name">@item.ProductName</div>
+                                    <div class="cart-row-sku">SH-@item.ProductId.ToString("D4")</div>
+                                </div>
+                            </div>
+                            <div class="cart-row-unit">$@item.Price.ToString("N2")</div>
+                            <div class="cart-qty-wrap">
+                                <button type="button" class="cart-qty-btn" data-qty-dec>&minus;</button>
+                                <span class="cart-qty-val">@item.Quantity</span>
+                                <button type="button" class="cart-qty-btn" data-qty-inc>+</button>
+                            </div>
+                            <div class="cart-row-total">$@((item.Price * item.Quantity).ToString("N2"))</div>
+                            <button type="button" class="cart-remove-btn" data-remove>&#10005; Remove</button>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="sh-cart-empty" id="cartEmpty" style="@(Model.Items.Any() ? "display:none;" : "display:block;")">
+                <div class="sh-cart-empty-icon">⛬</div>
+                <div class="sh-cart-empty-title">Your cart is empty</div>
+                <div class="sh-cart-empty-sub">Browse the hub and add something you'll actually use.</div>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="shop" class="sh-cart-empty-cta">Continue shopping</a>
+            </div>
+
+            <div class="sh-cart-footer-bar" id="cartFooterBar" style="@(Model.Items.Any() ? "" : "display:none;")">
+                <a asp-controller="Home" asp-action="Index" asp-fragment="shop" class="sh-continue-link">&larr; Continue shopping</a>
+                <button type="button" class="sh-clear-btn" id="clearCartBtn">Clear cart</button>
+            </div>
+        </div>
+
+        <aside class="sh-summary-aside">
+            <div class="sh-summary-card" id="summaryCard" style="@(Model.Items.Any() ? "" : "display:none;")">
+                <div class="sh-summary-eyebrow">Order summary</div>
+                <div class="sh-summary-rows">
+                    <div class="sh-summary-row"><span>Subtotal (<span id="itemCountVal">@itemCount</span> items)</span><span id="subtotalVal">$@subtotal.ToString("N2")</span></div>
+                    <div class="sh-summary-row"><span>Shipping</span><span id="shippingVal">—</span></div>
+                    <div class="sh-summary-row"><span>Est. tax (8%)</span><span id="taxVal">—</span></div>
+                </div>
+                <div class="sh-summary-total-row">
+                    <span class="sh-summary-total-label">Order Total</span>
+                    <span class="sh-summary-total-amount" id="orderTotalVal">—</span>
+                </div>
+                <button type="button" class="sh-checkout-btn" id="checkoutBtn">Checkout</button>
+                <div class="sh-ship-note" id="shipNote"></div>
+            </div>
+
+            <div class="sh-promo-card" id="promoCard" style="@(Model.Items.Any() ? "" : "display:none;")">
+                <div class="sh-promo-label">Promo code</div>
+                <div class="sh-promo-row">
+                    <input id="promoInput" class="sh-promo-input" placeholder="SHOPHUB10" autocomplete="off" />
+                    <button type="button" class="sh-promo-btn" id="promoApplyBtn">Apply</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<div class="sh-modal-overlay" id="confirmModal">
+    <div class="sh-modal">
+        <div class="sh-confirm-title">Clear the whole cart?</div>
+        <p class="sh-confirm-sub" id="confirmSub"></p>
+        <div class="sh-confirm-actions">
+            <button type="button" class="sh-confirm-keep" id="confirmKeepBtn">Keep items</button>
+            <button type="button" class="sh-confirm-clear" id="confirmClearBtn">Clear cart</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var TAX_RATE = 0.08;
+            var SHIP_COST = 9.5;
+            var FREE_SHIP_AT = 75;
+
+            var rows = document.getElementById('cartRows');
+            var emptyState = document.getElementById('cartEmpty');
+            var tableScroll = document.querySelector('.sh-cart-table-scroll');
+            var footerBar = document.getElementById('cartFooterBar');
+            var summaryCard = document.getElementById('summaryCard');
+            var promoCard = document.getElementById('promoCard');
+            var headerSummary = document.getElementById('headerSummary');
+            var itemCountEl = document.getElementById('itemCountVal');
+            var subtotalEl = document.getElementById('subtotalVal');
+            var shippingEl = document.getElementById('shippingVal');
+            var taxEl = document.getElementById('taxVal');
+            var orderTotalEl = document.getElementById('orderTotalVal');
+            var shipNoteEl = document.getElementById('shipNote');
+
+            function money(n) { return '$' + n.toFixed(2); }
+
+            function recalc() {
+                var lineRows = rows.querySelectorAll('.cart-row');
+                var count = 0, subtotal = 0;
+                lineRows.forEach(function (row) {
+                    var price = parseFloat(row.getAttribute('data-price'));
+                    var qty = parseInt(row.getAttribute('data-qty'), 10);
+                    count += qty;
+                    subtotal += price * qty;
+                });
+
+                var shipping = subtotal === 0 || subtotal >= FREE_SHIP_AT ? 0 : SHIP_COST;
+                var tax = subtotal * TAX_RATE;
+                var orderTotal = subtotal + shipping + tax;
+                var hasItems = lineRows.length > 0;
+
+                itemCountEl.textContent = count;
+                subtotalEl.textContent = money(subtotal);
+                shippingEl.textContent = shipping === 0 ? 'Free' : money(shipping);
+                taxEl.textContent = money(tax);
+                orderTotalEl.textContent = money(orderTotal);
+                shipNoteEl.textContent = !hasItems ? '' : (shipping === 0
+                    ? 'Free shipping applied · 30-day returns'
+                    : 'Add ' + money(FREE_SHIP_AT - subtotal) + ' for free shipping');
+
+                headerSummary.textContent = hasItems
+                    ? lineRows.length + (lineRows.length === 1 ? ' product line · ' : ' product lines · ') + count + (count === 1 ? ' item' : ' items')
+                    : 'Nothing here yet';
+
+                tableScroll.style.display = hasItems ? '' : 'none';
+                emptyState.style.display = hasItems ? 'none' : 'block';
+                footerBar.style.display = hasItems ? 'flex' : 'none';
+                summaryCard.style.display = hasItems ? '' : 'none';
+                promoCard.style.display = hasItems ? '' : 'none';
+            }
+
+            async function changeQty(row, delta) {
+                var id = row.getAttribute('data-product-id');
+                var qty = parseInt(row.getAttribute('data-qty'), 10);
+                var newQty = qty + delta;
+
+                if (newQty < 1) {
+                    await removeRow(row);
+                    return;
+                }
+
+                var ok = await ShopHub.postForm(delta > 0 ? '/Cart/IncreaseQuantity' : '/Cart/DecreaseQuantity', { productId: id });
+                if (!ok) { ShopHub.showToast('Could not update quantity'); return; }
+
+                row.setAttribute('data-qty', newQty);
+                row.querySelector('.cart-qty-val').textContent = newQty;
+                var price = parseFloat(row.getAttribute('data-price'));
+                row.querySelector('.cart-row-total').textContent = money(price * newQty);
+                ShopHub.bumpCartCount(delta);
+                recalc();
+            }
+
+            async function removeRow(row) {
+                var id = row.getAttribute('data-product-id');
+                var qty = parseInt(row.getAttribute('data-qty'), 10);
+                var name = row.getAttribute('data-name');
+                var ok = await ShopHub.postForm('/Cart/RemoveItem', { productId: id });
+                if (!ok) { ShopHub.showToast('Could not remove item'); return; }
+                ShopHub.bumpCartCount(-qty);
+                row.remove();
+                ShopHub.showToast('Removed — ' + name);
+                recalc();
+            }
+
+            rows.addEventListener('click', function (e) {
+                var row = e.target.closest('.cart-row');
+                if (!row) return;
+                if (e.target.closest('[data-qty-inc]')) changeQty(row, 1);
+                else if (e.target.closest('[data-qty-dec]')) changeQty(row, -1);
+                else if (e.target.closest('[data-remove]')) removeRow(row);
+            });
+
+            var confirmModal = document.getElementById('confirmModal');
+            var clearBtn = document.getElementById('clearCartBtn');
+            var keepBtn = document.getElementById('confirmKeepBtn');
+            var confirmClearBtn = document.getElementById('confirmClearBtn');
+            var confirmSub = document.getElementById('confirmSub');
+
+            clearBtn.addEventListener('click', function () {
+                var lineRows = rows.querySelectorAll('.cart-row');
+                var count = 0, subtotal = 0;
+                lineRows.forEach(function (row) {
+                    var price = parseFloat(row.getAttribute('data-price'));
+                    var qty = parseInt(row.getAttribute('data-qty'), 10);
+                    count += qty; subtotal += price * qty;
+                });
+                confirmSub.textContent = count + (count === 1 ? ' item ' : ' items ') + 'worth ' + money(subtotal) + " will be removed. This can't be undone.";
+                confirmModal.classList.add('open');
+            });
+            keepBtn.addEventListener('click', function () { confirmModal.classList.remove('open'); });
+            confirmModal.addEventListener('click', function (e) { if (e.target === confirmModal) confirmModal.classList.remove('open'); });
+            confirmClearBtn.addEventListener('click', async function () {
+                var ok = await ShopHub.postForm('/Cart/ClearCart', {});
+                confirmModal.classList.remove('open');
+                if (!ok) { ShopHub.showToast('Could not clear cart'); return; }
+                var lineRows = rows.querySelectorAll('.cart-row');
+                var totalQty = 0;
+                lineRows.forEach(function (row) { totalQty += parseInt(row.getAttribute('data-qty'), 10); });
+                rows.innerHTML = '';
+                ShopHub.bumpCartCount(-totalQty);
+                ShopHub.showToast('Cart cleared');
+                recalc();
+            });
+
+            var promoInput = document.getElementById('promoInput');
+            document.getElementById('promoApplyBtn').addEventListener('click', function () {
+                var v = promoInput.value.trim();
+                ShopHub.showToast(v ? 'Code ' + v.toUpperCase() + ' applied' : 'Enter a promo code');
+            });
+
+            document.getElementById('checkoutBtn').addEventListener('click', function () {
+                var hasItems = rows.querySelectorAll('.cart-row').length > 0;
+                ShopHub.showToast(hasItems ? 'Heading to checkout…' : 'Your cart is empty');
+            });
+
+            recalc();
+        })();
+    </script>
+}

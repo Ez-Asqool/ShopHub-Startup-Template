@@ -8,83 +8,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/myshop.Web.styles.css" asp-append-version="true" />
-
-    <style>
-        body {
-            background: linear-gradient(135deg,#eef2f7 0%,#d9e4f5 40%,#c3dafe 100%);
-            margin: 0;
-            animation: fadeIn .8s ease;
-        }
-
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        nav.navbar {
-            background: linear-gradient(90deg,#ffffff,#f8fbff) !important;
-            box-shadow: 0 6px 18px rgba(0,0,0,.08);
-            padding: 1rem 0;
-            animation: slideDown .8s ease;
-        }
-
-        @@keyframes slideDown {
-            from {
-                transform: translateY(-35px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .nav-link-box {
-            background: linear-gradient(135deg,#00c6ff,#0072ff);
-            color: white !important;
-            padding: .65rem 1.25rem;
-            margin-left: .75rem;
-            border-radius: 14px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: .3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,.15);
-        }
-
-            .nav-link-box:hover {
-                transform: translateY(-3px);
-                background: linear-gradient(135deg,#005bea,#00c6fb);
-                box-shadow: 0 8px 18px rgba(0,0,0,.2);
-            }
-
-        .home-box {
-            font-size: 1.05rem;
-            padding: .9rem 1.6rem;
-        }
-
-        footer {
-            background: linear-gradient(90deg,#111,#1b1b1b);
-            color: white;
-            padding: 1.2rem 0;
-            border-top-left-radius: 18px;
-            border-top-right-radius: 18px;
-        }
-
-            footer a {
-                color: white;
-                text-decoration: none;
-            }
-
-                footer a:hover {
-                    text-decoration: underline;
-                }
-    </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -94,9 +17,10 @@
             <div class="container">
 
                 <a class="navbar-brand nav-link-box home-box"
-                   asp-controller="Product"
+                   asp-area=""
+                   asp-controller="Home"
                    asp-action="Index">
-                    myshop.Web
+                    myShop
                 </a>
 
                 <button class="navbar-toggler"
@@ -112,21 +36,43 @@
 
                         <li class="nav-item">
                             <a class="nav-link nav-link-box"
-                               asp-controller="Product"
+                               asp-area=""
+                               asp-controller="Products"
                                asp-action="Index">
-                                Products
+                                Browse Products
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link nav-link-box"
+                               asp-area="Admin"
+                               asp-controller="Product"
+                               asp-action="Index">
+                                Manage Products
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-box"
+                               asp-area="Admin"
                                asp-controller="Category"
                                asp-action="Index">
                                 Categories
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-box"
+                               asp-area=""
+                               asp-controller="Cart"
+                               asp-action="Index">
+                                Cart
+                            </a>
+                        </li>
+
                     </ul>
+
+                    <partial name="_LoginPartial" />
 
                 </div>
 

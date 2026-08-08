@@ -1,7 +1,9 @@
+wwwroot\css\admin.css
 wwwroot\css\adminlte.css
 wwwroot\css\adminlte.css.map
 wwwroot\css\adminlte.min.css
 wwwroot\css\adminlte.min.css.map
+wwwroot\css\admin-modern.css
 wwwroot\css\alt\adminlte.components.css
 wwwroot\css\alt\adminlte.components.css.map
 wwwroot\css\alt\adminlte.components.min.css
@@ -43,7 +45,6 @@ wwwroot\Images\Products\40400314-7c8b-4bdb-b7b7-cec4f0cb861d.png
 wwwroot\Images\Products\42af8ba8-65df-417b-908c-ffb6cfcdfc0c.jpg
 wwwroot\Images\Products\4a2b378c-d4db-4312-b241-03d278e97c59.jpg
 wwwroot\Images\Products\4c4284fe-3fed-4d26-953a-d12762d3e240.jpg
-wwwroot\Images\Products\4e81dc0a-e2d2-4e6f-98e7-e95a185e770b.png
 wwwroot\Images\Products\4eb463ee-d056-4ff7-94a0-bc2418c1f866.png
 wwwroot\Images\Products\5f4d61ba-5f02-4a22-8305-1148a341710f.jpg
 wwwroot\Images\Products\634c1c6c-c82f-48f2-b186-db558a0fff53.jpg
@@ -111,6 +112,9 @@ wwwroot\img\user6-128x128.jpg
 wwwroot\img\user7-128x128.jpg
 wwwroot\img\user8-128x128.jpg
 wwwroot\js\.eslintrc.json
+wwwroot\js\admin\categories-admin.js
+wwwroot\js\admin\products-admin.js
+wwwroot\js\admin\users-admin.js
 wwwroot\js\adminlte.js
 wwwroot\js\adminlte.js.map
 wwwroot\js\adminlte.min.js
@@ -120,7 +124,6 @@ wwwroot\js\order.js
 wwwroot\js\pages\dashboard.js
 wwwroot\js\pages\dashboard2.js
 wwwroot\js\pages\dashboard3.js
-wwwroot\js\products.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
 wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
@@ -245,3 +248,6 @@ wwwroot\plugins\sweetalert2\sweetalert2.min.css
 wwwroot\plugins\sweetalert2\sweetalert2.min.js
 wwwroot\shoppingcart\index.html
 wwwroot\shoppingcart\style.css
+wwwroot\uploads\products\4dea6099-4513-4166-bcf0-5dc87e3db554.jpg
+wwwroot\uploads\products\dbcc5f70-7941-40d5-84dd-bce01a7271f1.png
+wwwroot\uploads\products\f6ab85fa-02b2-453a-ac2a-77706b5dde09.jpeg

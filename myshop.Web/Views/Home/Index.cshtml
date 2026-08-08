@@ -1,8 +1,214 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model myshop.Web.ViewModels.HomeIndexVM
+@{
+    Layout = "_ShopHubLayout";
+    ViewData["Title"] = "ShopHub — Home";
+    var featured = Model.Products.Take(3).ToList();
+    var heroImg = Model.Products.FirstOrDefault(p => !string.IsNullOrEmpty(p.Img))?.Img;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome TO VS</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@section Styles {
+    <style>
+        .sh-hero { position: relative; max-width: 1320px; margin: 0 auto; padding: 30px 44px 0; min-height: 560px; overflow: hidden; }
+        .sh-marquee-wrap { position: absolute; top: 40px; left: 0; right: 0; overflow: hidden; opacity: 0.09; pointer-events: none; }
+        .sh-marquee { display: flex; width: max-content; animation: shSlide 26s linear infinite; font-size: 168px; font-weight: 800; letter-spacing: -0.04em; white-space: nowrap; }
+        .sh-hero-grid { position: relative; display: grid; grid-template-columns: 1fr 1.05fr; gap: 40px; align-items: center; }
+        .sh-eyebrow { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); border: 1px solid oklch(0.92 0.17 118 / 0.5); border-radius: 999px; padding: 8px 15px; margin-bottom: 26px; white-space: nowrap; line-height: 1.2; animation: shUp 0.7s 0.05s ease-out both; }
+        .sh-h1 { font-size: 66px; font-weight: 700; line-height: 1.04; letter-spacing: -0.03em; margin: 0 0 22px; text-wrap: balance; animation: shUp 0.8s 0.14s ease-out both; }
+        .sh-lead { font-size: 16px; line-height: 1.7; color: oklch(0.92 0.02 268 / 0.78); max-width: 42ch; margin: 0 0 34px; text-wrap: pretty; animation: shUp 0.8s 0.24s ease-out both; }
+        .sh-hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; animation: shUp 0.8s 0.34s ease-out both; }
+        .sh-cta { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 17px 32px; border-radius: 999px; background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-cta:hover { background: oklch(0.98 0.15 118); color: oklch(0.24 0.08 130); }
+        .sh-cta-ghost { font-family: Poppins, sans-serif; font-size: 14px; font-weight: 500; padding: 17px 30px; border-radius: 999px; border: 1px solid oklch(1 0 0 / 0.3); background: transparent; color: oklch(0.98 0.01 268); cursor: pointer; }
+        .sh-cta-ghost:hover { background: oklch(1 0 0 / 0.14); }
+
+        .sh-hero-visual { position: relative; height: 460px; display: flex; align-items: center; justify-content: center; }
+        .sh-glow { position: absolute; width: 380px; height: 380px; border-radius: 999px; background: radial-gradient(circle, oklch(0.92 0.17 118 / 0.35) 0%, transparent 68%); animation: shGlow 6s ease-in-out infinite; }
+        .sh-ring { position: absolute; width: 330px; height: 330px; border-radius: 999px; border: 1px solid oklch(1 0 0 / 0.22); }
+        .sh-hero-card { position: relative; width: 430px; height: 320px; border-radius: 18px; border: 1px solid oklch(1 0 0 / 0.3); background-color: oklch(1 0 0 / 0.1); display: flex; align-items: center; justify-content: center; animation: shFloat 7s ease-in-out infinite; box-shadow: 0 40px 80px oklch(0.2 0.06 268 / 0.4); overflow: hidden; }
+        .sh-hero-card-placeholder { background-image: repeating-linear-gradient(135deg, oklch(1 0 0 / 0.13) 0 1px, transparent 1px 12px); }
+        .sh-hero-card img { width: 100%; height: 100%; object-fit: contain; padding: 24px; }
+        .sh-hero-card span { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; background: oklch(1 0 0 / 0.16); padding: 9px 14px; border-radius: 5px; }
+
+        .sh-featured { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 780px; margin: 6px auto 0; padding-bottom: 56px; }
+        .sh-featured-card { display: flex; align-items: center; gap: 13px; min-width: 0; overflow: hidden; background: oklch(0.99 0.004 280); border-radius: 16px; padding: 12px; box-shadow: 0 22px 44px oklch(0.2 0.06 268 / 0.28); transition: transform 0.25s ease; animation: shIn 0.75s cubic-bezier(0.2,0.9,0.3,1) both; }
+        .sh-featured-card:hover { transform: translateY(-4px); }
+        .sh-featured-thumb { width: 74px; height: 62px; flex: none; border-radius: 10px; object-fit: cover; background-color: oklch(0.9 0.01 268); }
+        .sh-featured-info { flex: 1; min-width: 0; }
+        .sh-featured-cat { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.55 0.06 285); margin-bottom: 4px; }
+        .sh-featured-name { font-size: 13.5px; font-weight: 600; color: oklch(0.28 0.03 268); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sh-featured-price { font-size: 14px; font-weight: 700; color: oklch(0.32 0.03 268); }
+        .sh-featured-add { width: 34px; height: 34px; flex: none; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); font-size: 18px; line-height: 1; cursor: pointer; }
+        .sh-featured-add:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+
+        .sh-shop { background: oklch(0.975 0.006 280); color: oklch(0.24 0.02 268); border-radius: 42px 42px 0 0; padding: 66px 0 0; }
+        .sh-shop-inner { max-width: 1320px; margin: 0 auto; padding: 0 44px; }
+        .sh-shop-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 30px; }
+        .sh-eyebrow-dark { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.52 0.13 285); margin-bottom: 10px; }
+        .sh-h2 { font-size: 42px; font-weight: 700; letter-spacing: -0.025em; margin: 0; }
+        .sh-chips { display: flex; flex-wrap: wrap; gap: 9px; }
+        .sh-chip { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 17px; border-radius: 999px; cursor: pointer; transition: all 0.2s ease; background: oklch(0.99 0.004 280); color: oklch(0.42 0.03 280); border: 1px solid oklch(0.88 0.012 280); }
+        .sh-chip.active { background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); border: 1px solid oklch(0.48 0.13 268); }
+
+        .sh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 26px 22px; padding-bottom: 40px; }
+        .sh-card { display: flex; flex-direction: column; background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 18px; overflow: hidden; transition: transform 0.28s cubic-bezier(0.2,0.9,0.3,1), box-shadow 0.28s ease, border-color 0.28s ease; animation: shIn 0.6s ease-out both; }
+        .sh-card:hover { transform: translateY(-8px); box-shadow: 0 26px 50px oklch(0.4 0.06 280 / 0.18); border-color: oklch(0.52 0.13 285 / 0.5); }
+        .sh-card-shot { position: relative; aspect-ratio: 1 / 1; background-color: oklch(0.93 0.012 280); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .sh-card-shot img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+        .sh-card-body { padding: 17px 17px 19px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+        .sh-card-cat { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.52 0.13 285); }
+        .sh-card-name { font-size: 16px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+        .sh-card-price-row { display: flex; align-items: baseline; gap: 8px; margin-top: auto; }
+        .sh-card-price { font-size: 18px; font-weight: 700; }
+        .sh-card-add { margin-top: 6px; width: 100%; font-family: Poppins, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 13px 16px; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); cursor: pointer; }
+        .sh-card-add:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-card-add:active { transform: scale(0.96); }
+
+        .sh-empty { display: none; padding: 90px 0; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(0.5 0.03 280); }
+
+        @@media (max-width: 900px) {
+            .sh-hero-grid { grid-template-columns: 1fr; }
+            .sh-hero-visual { height: 320px; }
+            .sh-h1 { font-size: 44px; }
+            .sh-featured { grid-template-columns: 1fr; }
+        }
+    </style>
+}
+
+<section class="sh-hero">
+    <div class="sh-marquee-wrap">
+        <div class="sh-marquee">
+            <span style="padding-right: 60px;">SHOPHUB &middot; CURATED &middot; SHOPHUB &middot; CURATED &middot;&nbsp;</span>
+            <span style="padding-right: 60px;">SHOPHUB &middot; CURATED &middot; SHOPHUB &middot; CURATED &middot;&nbsp;</span>
+        </div>
+    </div>
+
+    <div class="sh-hero-grid">
+        <div style="padding-top: 20px;">
+            <div class="sh-eyebrow">New arrivals — live now</div>
+            <h1 class="sh-h1">Are you ready to<br /><span class="sh-accent">lead the way</span></h1>
+            <p class="sh-lead">Gear, tech and everyday essentials across @Model.Categories.Count() curated categories — browse the full hub, add to cart, and be out the door in two taps.</p>
+            <div class="sh-hero-actions">
+                <a href="#shop" class="sh-cta">Buy now <span style="font-size: 16px;">&rarr;</span></a>
+                <a asp-controller="Account" asp-action="Register" class="sh-cta-ghost">Create account</a>
+            </div>
+        </div>
+
+        <div class="sh-hero-visual">
+            <div class="sh-glow"></div>
+            <div class="sh-ring"></div>
+            <div class="sh-hero-card @(heroImg == null ? "sh-hero-card-placeholder" : "")">
+                @if (heroImg != null)
+                {
+                    <img src="~/@heroImg" alt="Featured product" />
+                }
+                else
+                {
+                    <span>ShopHub</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="sh-featured">
+        @foreach (var f in featured)
+        {
+            <div class="sh-featured-card">
+                <img class="sh-featured-thumb" src="~/@(string.IsNullOrEmpty(f.Img) ? "img/default-150x150.png" : f.Img)" alt="@f.Name" />
+                <div class="sh-featured-info">
+                    <div class="sh-featured-cat">@f.CategoryName</div>
+                    <div class="sh-featured-name">@f.Name</div>
+                    <div class="sh-featured-price">$@f.Price.ToString("N2")</div>
+                </div>
+                <button class="sh-featured-add" type="button" data-add-to-cart data-product-id="@f.Id" data-product-name="@f.Name">+</button>
+            </div>
+        }
+    </div>
+</section>
+
+<section id="shop" class="sh-shop">
+    <div class="sh-shop-inner">
+        <div class="sh-shop-head">
+            <div>
+                <div class="sh-eyebrow-dark" id="resultLabel">@Model.Products.Count() products available</div>
+                <h2 class="sh-h2">Browse the hub</h2>
+            </div>
+            <div class="sh-chips" id="categoryChips">
+                <button type="button" class="sh-chip active" data-cat="All">All</button>
+                @foreach (var cat in Model.Categories)
+                {
+                    <button type="button" class="sh-chip" data-cat="@cat.Name">@cat.Name</button>
+                }
+            </div>
+        </div>
+
+        <div class="sh-grid" id="productGrid">
+            @foreach (var p in Model.Products)
+            {
+                <article class="sh-card" data-category="@p.CategoryName" data-name="@p.Name.ToLowerInvariant()">
+                    <div class="sh-card-shot">
+                        <img src="~/@(string.IsNullOrEmpty(p.Img) ? "img/default-150x150.png" : p.Img)" alt="@p.Name" />
+                    </div>
+                    <div class="sh-card-body">
+                        <div class="sh-card-cat">@p.CategoryName</div>
+                        <div class="sh-card-name">@p.Name</div>
+                        <div class="sh-card-price-row">
+                            <span class="sh-card-price">$@p.Price.ToString("N2")</span>
+                        </div>
+                        <button class="sh-card-add" type="button" data-add-to-cart data-product-id="@p.Id" data-product-name="@p.Name">Add to cart</button>
+                    </div>
+                </article>
+            }
+        </div>
+
+        <div class="sh-empty" id="emptyState">No products match that search</div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            var activeCategory = 'All';
+            var searchInput = document.getElementById('searchInput');
+            var chips = document.querySelectorAll('#categoryChips .sh-chip');
+            var cards = document.querySelectorAll('#productGrid .sh-card');
+            var resultLabel = document.getElementById('resultLabel');
+            var emptyState = document.getElementById('emptyState');
+            var productGrid = document.getElementById('productGrid');
+
+            function applyFilters() {
+                var q = searchInput.value.trim().toLowerCase();
+                var visible = 0;
+
+                cards.forEach(function (card) {
+                    var matchesCat = activeCategory === 'All' || card.getAttribute('data-category') === activeCategory;
+                    var matchesQuery = !q || card.getAttribute('data-name').indexOf(q) !== -1 || card.getAttribute('data-category').toLowerCase().indexOf(q) !== -1;
+                    var show = matchesCat && matchesQuery;
+                    card.style.display = show ? '' : 'none';
+                    if (show) visible++;
+                });
+
+                resultLabel.textContent = visible + (visible === 1 ? ' product' : ' products') + (activeCategory === 'All' ? ' available' : ' in ' + activeCategory);
+                emptyState.style.display = visible === 0 ? 'block' : 'none';
+                productGrid.style.display = visible === 0 ? 'none' : 'grid';
+            }
+
+            chips.forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    chips.forEach(function (c) { c.classList.remove('active'); });
+                    chip.classList.add('active');
+                    activeCategory = chip.getAttribute('data-cat');
+                    applyFilters();
+                });
+            });
+
+            searchInput.addEventListener('input', applyFilters);
+
+        @if (!string.IsNullOrWhiteSpace(Model.Search))
+        {
+            @:searchInput.value = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Search));
+        }
+
+            applyFilters();
+        })();
+    </script>
+}

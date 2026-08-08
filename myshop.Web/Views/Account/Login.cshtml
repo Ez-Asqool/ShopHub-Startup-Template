@@ -1,0 +1,197 @@
+@using myshop.Application.Services.Category
+@using myshop.Application.Services.Product
+@model myshop.Web.ViewModels.LoginVM
+@inject IProductService ProductService
+@inject ICategoryService CategoryService
+@{
+    Layout = null;
+    ViewData["Title"] = "ShopHub — Log in";
+    var productCount = (await ProductService.GetAllProductsAsync()).Count();
+    var categoryCount = (await CategoryService.GetAllCategoriesAsync()).Count();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+    <style>
+        html, body { margin: 0; padding: 0; background: oklch(0.44 0.12 268); }
+        * { box-sizing: border-box; }
+        a { color: oklch(0.52 0.13 285); text-decoration: none; }
+        a:hover { color: oklch(0.42 0.13 285); }
+        button { font-family: inherit; }
+
+        @@keyframes shDrift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+        @@keyframes shUp { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: translateY(0) } }
+        @@keyframes shGlow { 0%, 100% { opacity: 0.45; transform: scale(1) } 50% { opacity: 0.85; transform: scale(1.08) } }
+        @@keyframes shSlide { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+
+        .sh-auth-page { min-height: 100vh; font-family: Poppins, 'Helvetica Neue', sans-serif; color: oklch(0.98 0.01 268); background: linear-gradient(120deg, oklch(0.46 0.13 265) 0%, oklch(0.52 0.11 285) 38%, oklch(0.60 0.10 320) 68%, oklch(0.50 0.12 258) 100%); background-size: 260% 260%; animation: shDrift 22s ease-in-out infinite; display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, 0.82fr); }
+
+        .sh-auth-left { position: relative; overflow: hidden; padding: 44px 56px; display: flex; flex-direction: column; min-width: 0; }
+        .sh-auth-marquee-wrap { position: absolute; top: 34%; left: -4%; right: -4%; overflow: hidden; opacity: 0.08; pointer-events: none; }
+        .sh-auth-marquee { display: flex; width: max-content; animation: shSlide 26s linear infinite; font-size: 150px; font-weight: 800; letter-spacing: -0.04em; white-space: nowrap; }
+        .sh-auth-brand { position: relative; display: flex; align-items: center; gap: 10px; font-size: 25px; font-weight: 700; letter-spacing: -0.02em; color: oklch(0.98 0.01 268); animation: shUp 0.7s ease-out both; }
+        .sh-auth-brand-dot { width: 34px; height: 34px; border-radius: 11px; background: oklch(0.92 0.17 118); display: inline-block; }
+        .sh-accent { color: oklch(0.92 0.17 118); }
+
+        .sh-auth-hero { position: relative; margin: auto 0; padding: 40px 0; }
+        .sh-auth-eyebrow { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); border: 1px solid oklch(0.92 0.17 118 / 0.5); border-radius: 999px; padding: 8px 15px; margin-bottom: 26px; white-space: nowrap; line-height: 1.2; animation: shUp 0.7s 0.06s ease-out both; }
+        .sh-auth-h1 { font-size: 58px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin: 0 0 20px; max-width: 14ch; text-wrap: balance; animation: shUp 0.8s 0.14s ease-out both; }
+        .sh-auth-lead { font-size: 16px; line-height: 1.7; color: oklch(0.92 0.02 268 / 0.78); max-width: 40ch; margin: 0 0 40px; text-wrap: pretty; animation: shUp 0.8s 0.22s ease-out both; }
+        .sh-auth-stats { display: flex; gap: 44px; flex-wrap: wrap; animation: shUp 0.8s 0.3s ease-out both; }
+        .sh-auth-stat-num { font-size: 30px; font-weight: 700; }
+        .sh-auth-stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.9 0.02 268 / 0.6); }
+
+        .sh-auth-glow { position: absolute; bottom: -70px; right: -60px; width: 320px; height: 320px; border-radius: 999px; background: radial-gradient(circle, oklch(0.92 0.17 118 / 0.32) 0%, transparent 66%); animation: shGlow 7s ease-in-out infinite; pointer-events: none; }
+        .sh-auth-copyright { position: relative; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.9 0.02 268 / 0.5); }
+
+        .sh-auth-right { background: oklch(0.975 0.006 280); color: oklch(0.24 0.02 268); display: flex; align-items: center; justify-content: center; padding: 44px 40px; min-width: 0; }
+        .sh-auth-card { width: 100%; max-width: 400px; animation: shUp 0.75s 0.1s cubic-bezier(0.2,0.9,0.3,1) both; }
+
+        .sh-auth-tabs { display: flex; gap: 4px; padding: 4px; background: oklch(0.94 0.01 280); border-radius: 999px; margin-bottom: 30px; }
+        .sh-auth-tab { flex: 1; text-align: center; font-size: 13.5px; font-weight: 500; padding: 11px; border-radius: 999px; color: oklch(0.5 0.02 280); }
+        .sh-auth-tab:hover { color: oklch(0.3 0.02 268); }
+        .sh-auth-tab.active { font-weight: 600; background: oklch(1 0 0); color: oklch(0.24 0.02 268); box-shadow: 0 2px 6px oklch(0.3 0.04 280 / 0.16); }
+
+        .sh-auth-title { font-size: 32px; font-weight: 700; letter-spacing: -0.025em; margin: 0 0 8px; }
+        .sh-auth-subtitle { font-size: 14px; color: oklch(0.5 0.02 280); margin: 0 0 28px; }
+
+        .sh-form-body { display: flex; flex-direction: column; gap: 16px; }
+        .sh-form-group { display: flex; flex-direction: column; gap: 8px; }
+        .sh-form-group label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.5 0.02 280); }
+        .sh-form-input { font-family: Poppins, sans-serif; font-size: 14.5px; padding: 15px 16px; border-radius: 13px; border: 1px solid oklch(0.88 0.012 280); background: oklch(1 0 0); outline: none; color: oklch(0.24 0.02 268); transition: border-color 0.2s ease, box-shadow 0.2s ease; width: 100%; }
+        .sh-form-input:focus { border-color: oklch(0.52 0.13 285); box-shadow: 0 0 0 4px oklch(0.52 0.13 285 / 0.12); }
+        .sh-form-input.input-validation-error { border-color: oklch(0.7 0.16 25); }
+        .sh-field-error { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: oklch(0.52 0.19 25); }
+
+        .sh-pw-wrap { position: relative; display: flex; }
+        .sh-pw-wrap .sh-form-input { padding-right: 82px; }
+        .sh-pw-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 11px; border-radius: 999px; border: none; background: oklch(0.94 0.01 280); color: oklch(0.42 0.03 280); cursor: pointer; }
+        .sh-pw-toggle:hover { background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); }
+
+        .sh-remember-row { display: flex; align-items: center; gap: 9px; font-size: 13px; color: oklch(0.42 0.03 280); cursor: pointer; margin-top: 2px; }
+        .sh-remember-row input { width: 16px; height: 16px; accent-color: oklch(0.48 0.13 268); cursor: pointer; }
+
+        .sh-form-error-box { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: oklch(0.52 0.19 25); background: oklch(0.96 0.03 25); border: 1px solid oklch(0.86 0.07 25); border-radius: 11px; padding: 12px 14px; }
+        .sh-form-error-box ul { margin: 0; padding-left: 18px; }
+        .validation-summary-valid { display: none; }
+        .field-validation-valid { display: none; }
+        .field-validation-error { color: oklch(0.52 0.19 25); }
+
+        .sh-success-box { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: oklch(0.4 0.12 145); background: oklch(0.95 0.05 145); border: 1px solid oklch(0.82 0.1 145); border-radius: 11px; padding: 12px 14px; }
+
+        .sh-submit-btn { margin-top: 6px; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 17px; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
+        .sh-submit-btn:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-submit-btn:active { transform: scale(0.98); }
+
+        .sh-auth-footer-link { text-align: center; font-size: 13.5px; color: oklch(0.5 0.02 280); margin-top: 10px; }
+        .sh-auth-footer-link a { font-weight: 600; }
+
+        @@media (max-width: 860px) {
+            .sh-auth-page { grid-template-columns: 1fr; }
+            .sh-auth-left { padding: 34px 28px; min-height: 320px; }
+            .sh-auth-h1 { font-size: 40px; }
+            .sh-auth-hero { margin: 24px 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="sh-auth-page">
+
+    <section class="sh-auth-left">
+        <div class="sh-auth-marquee-wrap">
+            <div class="sh-auth-marquee">
+                <span style="padding-right: 60px;">SHOPHUB &middot; WELCOME BACK &middot;&nbsp;</span>
+                <span style="padding-right: 60px;">SHOPHUB &middot; WELCOME BACK &middot;&nbsp;</span>
+            </div>
+        </div>
+
+        <a asp-controller="Home" asp-action="Index" class="sh-auth-brand">
+            <span class="sh-auth-brand-dot"></span>
+            <span>Shop<span class="sh-accent">Hub</span></span>
+        </a>
+
+        <div class="sh-auth-hero">
+            <div class="sh-auth-eyebrow">Welcome back to the hub</div>
+            <h1 class="sh-auth-h1">Good to see<br /><span class="sh-accent">you again.</span></h1>
+            <p class="sh-auth-lead">Your cart, your saved items and your order history are waiting exactly where you left them.</p>
+            <div class="sh-auth-stats">
+                <div><div class="sh-auth-stat-num">@productCount</div><div class="sh-auth-stat-label">Products</div></div>
+                <div><div class="sh-auth-stat-num">@categoryCount</div><div class="sh-auth-stat-label">Categories</div></div>
+            </div>
+        </div>
+
+        <div class="sh-auth-glow"></div>
+        <div class="sh-auth-copyright">&copy; @DateTime.Now.Year ShopHub</div>
+    </section>
+
+    <section class="sh-auth-right">
+        <div class="sh-auth-card">
+            <div class="sh-auth-tabs">
+                <span class="sh-auth-tab active">Log in</span>
+                <a asp-controller="Account" asp-action="Register" class="sh-auth-tab">Register</a>
+            </div>
+
+            <h2 class="sh-auth-title">Log in</h2>
+            <p class="sh-auth-subtitle">Enter your details to get back to the hub.</p>
+
+            @if (TempData["RegisterSuccess"] != null)
+            {
+                <div class="sh-success-box" style="margin-bottom: 16px;">@TempData["RegisterSuccess"]</div>
+            }
+
+            <form asp-controller="Account" asp-action="Login" method="post" class="sh-form-body" novalidate>
+                <input type="hidden" asp-for="ReturnUrl" />
+                <div asp-validation-summary="ModelOnly" class="sh-form-error-box"></div>
+
+                <div class="sh-form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="sh-form-input" placeholder="you@example.com" autocomplete="username" />
+                    <span asp-validation-for="Email" class="sh-field-error"></span>
+                </div>
+
+                <div class="sh-form-group">
+                    <label asp-for="Password"></label>
+                    <span class="sh-pw-wrap">
+                        <input asp-for="Password" class="sh-form-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password" id="Password" />
+                        <button type="button" class="sh-pw-toggle" id="pwToggle">Show</button>
+                    </span>
+                    <span asp-validation-for="Password" class="sh-field-error"></span>
+                </div>
+
+                <label class="sh-remember-row">
+                    <input asp-for="RememberMe" />
+                    Remember me
+                </label>
+
+                <button type="submit" class="sh-submit-btn">Log in</button>
+
+                <div class="sh-auth-footer-link">Don't have an account? <a asp-controller="Account" asp-action="Register">Register</a></div>
+            </form>
+        </div>
+    </section>
+
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    (function () {
+        var pwInput = document.getElementById('Password');
+        var toggleBtn = document.getElementById('pwToggle');
+
+        toggleBtn.addEventListener('click', function () {
+            var show = pwInput.type === 'password';
+            pwInput.type = show ? 'text' : 'password';
+            toggleBtn.textContent = show ? 'Hide' : 'Show';
+        });
+    })();
+</script>
+</body>
+</html>

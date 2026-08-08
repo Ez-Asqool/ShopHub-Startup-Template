@@ -1,0 +1,304 @@
+/* ==========================================================================
+   Admin area design system (myshop.Web/Areas/Admin)
+   Single source of truth for the AdminLTE dashboard shell and every
+   Product/Category CRUD page, replacing the per-view inline <style> blocks
+   that used to duplicate (and drift from) this same look.
+   ========================================================================== */
+
+:root {
+    --admin-primary: #1e40af;
+    --admin-primary-dark: #1e3a8a;
+    --admin-primary-light: #3b82f6;
+    --admin-success: #16a34a;
+    --admin-success-dark: #15803d;
+    --admin-danger: #dc2626;
+    --admin-danger-dark: #b91c1c;
+    --admin-border: #d0d7de;
+    --admin-text: #1e3a8a;
+    --admin-bg: #f4f6f9;
+}
+
+/* ---- Dashboard shell ------------------------------------------------- */
+
+body, .nav-link, .brand-text, .content-wrapper {
+    font-family: 'Poppins', sans-serif;
+}
+
+.main-sidebar {
+    background: linear-gradient(180deg, #1e3c72, #2a5298);
+}
+
+.nav-sidebar > .nav-item > .nav-link {
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: .3s;
+}
+
+    .nav-sidebar > .nav-item > .nav-link:hover {
+        background: rgba(255,255,255,.1);
+        color: white;
+    }
+
+    .nav-sidebar > .nav-item > .nav-link.active {
+        background: rgba(255,255,255,.18);
+        color: white;
+        box-shadow: inset 3px 0 0 #fff;
+    }
+
+.brand-link {
+    background: #1e3c72;
+    color: white;
+    font-weight: 600;
+}
+
+.content-wrapper {
+    background: var(--admin-bg);
+}
+
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.1);
+    overflow: hidden;
+}
+
+.card-header {
+    background: var(--admin-primary-dark);
+    color: white;
+    font-weight: 600;
+}
+
+.card-tools .btn-tool {
+    color: white;
+}
+
+.footer-dark {
+    background: var(--admin-primary-dark);
+    color: white;
+}
+
+.user-panel img {
+    border: 2px solid white;
+}
+
+/* ---- Shared card used by every list/form page ------------------------ */
+
+.admin-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    padding: 24px;
+    margin-bottom: 20px;
+    animation: admin-fade-in .3s ease;
+}
+
+.admin-card-header {
+    background: #f1f5fb;
+    border-bottom: 1px solid var(--admin-border);
+    padding: 18px 0;
+    text-align: center;
+    border-radius: 14px 14px 0 0;
+    margin-bottom: 20px;
+}
+
+    .admin-card-header h4 {
+        color: var(--admin-primary-dark);
+        font-weight: 700;
+        margin: 0;
+    }
+
+@keyframes admin-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- Forms ------------------------------------------------------------ */
+
+.admin-card .form-control,
+.admin-card textarea,
+.admin-card select {
+    background-color: #fefefe;
+    border: 1px solid #a0aec0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: .25s ease;
+    color: var(--admin-text);
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
+
+    .admin-card .form-control::placeholder {
+        color: #7f9cf5;
+    }
+
+    .admin-card .form-control:focus,
+    .admin-card textarea:focus,
+    .admin-card select:focus {
+        border-color: var(--admin-primary);
+        box-shadow: 0 0 0 .2rem rgba(59,130,246,.25);
+    }
+
+    .admin-card .form-control:disabled {
+        background-color: #f5f5f5;
+        color: #6b7280;
+    }
+
+.admin-card .form-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--admin-text);
+}
+
+/* ---- Buttons -----------------------------------------------------------
+   Full-size buttons apply only inside a <form> or the list page's .top-btn
+   ("Create ..." link) so they never inflate the small in-table row actions,
+   which get their own compact treatment further below. ---------------- */
+
+.admin-card form .btn-primary,
+.top-btn .btn-primary {
+    padding: 10px 22px;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: var(--admin-primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(30,64,175,.3);
+}
+
+    .admin-card form .btn-primary:hover,
+    .top-btn .btn-primary:hover {
+        background-color: var(--admin-primary-dark);
+        box-shadow: 0 6px 15px rgba(30,64,175,.4);
+        transform: translateY(-1px);
+    }
+
+.admin-card form .btn-success {
+    padding: 10px 22px;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: var(--admin-success);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(22,163,74,.3);
+}
+
+    .admin-card form .btn-success:hover {
+        background-color: var(--admin-success-dark);
+        box-shadow: 0 6px 15px rgba(22,163,74,.4);
+    }
+
+.admin-card form .btn-danger {
+    padding: 9px 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: var(--admin-danger);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(220,38,38,.3);
+}
+
+    .admin-card form .btn-danger:hover {
+        background-color: var(--admin-danger-dark);
+        box-shadow: 0 6px 15px rgba(220,38,38,.4);
+    }
+
+.admin-card form .btn-outline-secondary {
+    border-radius: 8px;
+    padding: 9px 18px;
+    border-color: #93c5fd;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+    .admin-card form .btn-outline-secondary:hover {
+        background-color: #bfdbfe;
+        color: var(--admin-primary);
+    }
+
+.top-btn {
+    margin-bottom: 18px;
+    text-align: right;
+}
+
+/* Compact row-action buttons (Edit/Delete) inside a list table */
+.admin-table .btn-success,
+.admin-table .btn-danger,
+.action-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    color: white;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,.15);
+}
+
+.admin-table .btn-success {
+    background-color: var(--admin-success);
+}
+
+    .admin-table .btn-success:hover {
+        background-color: var(--admin-success-dark);
+    }
+
+.admin-table .btn-danger {
+    background-color: var(--admin-danger);
+}
+
+    .admin-table .btn-danger:hover {
+        background-color: var(--admin-danger-dark);
+    }
+
+/* ---- Tables (used by both the DataTables product grid and the plain
+        category table) ------------------------------------------------- */
+
+.admin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+    .admin-table thead th {
+        background: var(--admin-primary) !important;
+        color: white !important;
+        padding: 14px !important;
+        border: none !important;
+    }
+
+    .admin-table tbody td {
+        background: white !important;
+        padding: 14px !important;
+        color: var(--admin-text);
+        border-bottom: 1px solid #e3e8ef !important;
+        vertical-align: middle;
+    }
+
+    .admin-table tbody tr:hover td {
+        background: #ebf2ff !important;
+    }
+
+/* ---- Image upload preview --------------------------------------------- */
+
+.image-preview {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.table-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    padding: 2px;
+}

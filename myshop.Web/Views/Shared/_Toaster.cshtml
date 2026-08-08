@@ -19,3 +19,9 @@
         toastr.error("@TempData["Delete"]")
     </script>
 }
+@if (TempData["Error"] != null)
+{
+    <script>
+        toastr.error("@TempData["Error"]")
+    </script>
+}
