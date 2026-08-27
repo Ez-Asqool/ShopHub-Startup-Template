@@ -329,9 +329,36 @@
                 ShopHub.showToast(v ? 'Code ' + v.toUpperCase() + ' applied' : 'Enter a promo code');
             });
 
-            document.getElementById('checkoutBtn').addEventListener('click', function () {
+            document.getElementById('checkoutBtn').addEventListener('click', async function () {
                 var hasItems = rows.querySelectorAll('.cart-row').length > 0;
-                ShopHub.showToast(hasItems ? 'Heading to checkout…' : 'Your cart is empty');
+                if (!hasItems) {
+                    ShopHub.showToast('Your cart is empty');
+                    return;
+                }
+
+                var checkoutUrl = '@Url.Action("Checkout", "Order")';
+                try {
+                    var fd = new FormData();
+                    fd.append('__RequestVerificationToken', ShopHub.getToken());
+                    var res = await fetch('@Url.Action("CheckStock", "Order")', { method: 'POST', body: fd });
+                    var contentType = res.headers.get('content-type') || '';
+
+                    if (!contentType.includes('application/json')) {
+                        // Not authenticated (redirected to login) or unexpected response — let the server handle it on full navigation.
+                        window.location.href = checkoutUrl;
+                        return;
+                    }
+
+                    var data = await res.json();
+                    if (data.ok) {
+                        ShopHub.showToast('Heading to checkout…');
+                        window.location.href = checkoutUrl;
+                    } else {
+                        ShopHub.showToast(data.message || 'One or more items are out of stock', 5900);
+                    }
+                } catch (e) {
+                    window.location.href = checkoutUrl;
+                }
             });
 
             recalc();

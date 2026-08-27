@@ -22,7 +22,7 @@ namespace myshop.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
-            => await _dbSet.ToListAsync();
+            => await _dbSet.AsNoTracking().ToListAsync();
 
         public async Task<T?> GetByIdAsync(int id)
             => await _dbSet.FindAsync(id);
@@ -37,7 +37,7 @@ namespace myshop.Infrastructure.Repositories
             => _dbSet.Remove(entity);
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
-            => await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+            => await _dbSet.AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
 
         public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
             => await _dbSet.AnyAsync(predicate, cancellationToken);

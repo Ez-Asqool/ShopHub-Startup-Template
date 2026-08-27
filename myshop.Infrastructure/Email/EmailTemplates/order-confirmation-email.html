@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="x-apple-disable-message-reformatting" />
+<meta name="color-scheme" content="light dark" />
+<meta name="supported-color-schemes" content="light dark" />
+<title>Your ShopHub order is confirmed</title>
+<!--[if mso]>
+<xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+<![endif]-->
+<style>
+  @media only screen and (max-width: 620px) {
+    .sh-shell { width: 100% !important; }
+    .sh-pad { padding-left: 22px !important; padding-right: 22px !important; }
+    .sh-h1 { font-size: 30px !important; line-height: 36px !important; }
+  }
+</style>
+</head>
+<body style="margin:0; padding:0; background-color:#F1EFF8;">
+
+<span style="display:none !important; visibility:hidden; opacity:0; color:transparent; height:0; width:0; overflow:hidden; mso-hide:all;">Order {{OrderCode}} is confirmed — {{OrderTotal}} total.</span>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F1EFF8;">
+  <tr>
+    <td align="center" style="padding:28px 12px;">
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="sh-shell" style="width:600px; max-width:600px; background-color:#FFFFFF; border-radius:14px; overflow:hidden; border:1px solid #E2E0EC;">
+
+        <tr>
+          <td width="600" bgcolor="#463BA8" style="background-color:#463BA8; padding:20px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td width="330" align="left" style="font-family:Arial,Helvetica,sans-serif; font-size:22px; line-height:26px; mso-line-height-rule:exactly; font-weight:bold; color:#FFFFFF; letter-spacing:-0.3px;">
+                  Shop<span style="color:#C9F04C;">Hub</span>
+                </td>
+                <td width="206" align="right" style="font-family:'Courier New',Courier,monospace; font-size:12px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:1.4px; color:#D6D2F2;">
+                  {{OrderCode}}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td width="600" class="sh-pad" style="padding:38px 32px 8px 32px;">
+            <p style="margin:0 0 14px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; text-transform:uppercase; color:#4C8A1F;">Payment received</p>
+            <h1 class="sh-h1" style="margin:0 0 14px 0; font-family:Georgia,'Times New Roman',serif; font-size:36px; line-height:42px; mso-line-height-rule:exactly; font-weight:normal; color:#231F3E;">Your order is confirmed.</h1>
+            <p style="margin:0 0 30px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:26px; mso-line-height-rule:exactly; color:#59547A;">Thanks, {{RecipientName}}. We're preparing order <strong style="color:#231F3E;">{{OrderCode}}</strong> now — current status: {{OrderStatus}}.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td width="600" class="sh-pad" style="padding:0 32px 8px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #E6E3F2; border-radius:12px;">
+              <tr>
+                <td bgcolor="#F6F5FC" style="background-color:#F6F5FC; padding:14px 20px; border-bottom:1px solid #E6E3F2; font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; text-transform:uppercase; color:#7A7596;">Order summary &nbsp;&middot;&nbsp; {{ItemCount}} items</td>
+              </tr>
+
+              {{OrderItemsHtml}}
+
+              <tr>
+                <td bgcolor="#231F3E" style="background-color:#231F3E; padding:20px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                      <td style="font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:24px; mso-line-height-rule:exactly; font-weight:bold; color:#FFFFFF;">Order total</td>
+                      <td align="right" style="font-family:Arial,Helvetica,sans-serif; font-size:26px; line-height:30px; mso-line-height-rule:exactly; font-weight:bold; color:#C9F04C; white-space:nowrap;">{{OrderTotal}}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td width="600" class="sh-pad" style="padding:24px 32px 0 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #E6E3F2; border-radius:12px;">
+              <tr>
+                <td style="padding:20px; border-bottom:1px solid #EFEDF7;">
+                  <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; text-transform:uppercase; color:#7A7596;">Delivering to</p>
+                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:24px; mso-line-height-rule:exactly; color:#312D4F;">{{RecipientName}}<br />{{Address}}<br />{{City}}{{PhoneRow}}</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:20px;">
+                  <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; line-height:16px; mso-line-height-rule:exactly; letter-spacing:2px; text-transform:uppercase; color:#7A7596;">Payment</p>
+                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:24px; mso-line-height-rule:exactly; color:#312D4F;">{{PaymentStatus}}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td width="600" class="sh-pad" align="center" style="padding:30px 32px 10px 32px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td bgcolor="#463BA8" style="background-color:#463BA8; border-radius:26px;">
+                  <a href="{{OrderUrl}}" style="display:block; padding:16px 34px; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:18px; mso-line-height-rule:exactly; font-weight:bold; letter-spacing:1.2px; text-transform:uppercase; color:#FFFFFF; text-decoration:none;">View this order</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td width="600" class="sh-pad" align="center" style="padding:14px 32px 34px 32px;">
+            <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:24px; mso-line-height-rule:exactly; color:#59547A;">Didn't place this order? Reply to this email right away.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td width="600" bgcolor="#F6F5FC" style="background-color:#F6F5FC; border-top:1px solid #E6E3F2; padding:26px 32px;">
+            <p style="margin:0 0 10px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:20px; mso-line-height-rule:exactly; color:#7A7596;">
+              <a href="{{MyOrdersUrl}}" style="color:#59547A; text-decoration:none;">Your orders</a>
+            </p>
+            <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:20px; mso-line-height-rule:exactly; color:#8B86A6;">This is a transactional receipt for order {{OrderCode}}.</p>
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -4,10 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using myshop.Application.Contracts;
 using myshop.Application.Mapping;
 using myshop.Application.Services.Category;
+using myshop.Application.Services.Order;
 using myshop.Application.Services.Product;
 using myshop.Application.Services.User;
 using myshop.Domain.Constants;
 using myshop.Infrastructure.Data;
+using myshop.Infrastructure.Email;
 using myshop.Infrastructure.Identity;
 using myshop.Infrastructure.Repositories;
 using myshop.Web.Services;
@@ -27,15 +29,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
 // Add services to the container.
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, myshop.Application.Services.Product.ProductService>();
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<IOrderService, myshop.Application.Services.Order.OrderService>();
+builder.Services.AddScoped<myshop.Application.Services.Review.IReviewService, myshop.Application.Services.Review.ReviewService>();
 
 builder.Services.AddScoped<IFileService, LocalFileService>();
 builder.Services.AddScoped<ICartService, SessionCartService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddAutoMapper(cfg => { }, typeof(CategoryProfile).Assembly);
 builder.Services.AddMemoryCache();
 

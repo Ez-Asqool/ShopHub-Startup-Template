@@ -20,7 +20,8 @@ namespace myshop.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var cart = _cartService.GetCart();
-            var products = (await _productService.GetAllProductsAsync()).ToDictionary(p => p.Id);
+            var products = (await _productService.GetProductsByIdsAsync(cart.Select(c => c.ProductId)))
+                .ToDictionary(p => p.Id);
 
             var vm = new CartIndexVM
             {

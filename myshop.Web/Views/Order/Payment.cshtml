@@ -1,0 +1,407 @@
+@model myshop.Web.ViewModels.PaymentVM
+@{
+    Layout = "_ShopHubLayout";
+    ViewData["Title"] = "ShopHub — Payment";
+    var itemCount = Model.Items.Sum(i => i.Quantity);
+}
+
+@section Styles {
+    <style>
+        @@keyframes shSpin { to { transform: rotate(360deg) } }
+        @@keyframes shShine { 0% { transform: translateX(-120%) } 100% { transform: translateX(220%) } }
+
+        .sh-crumb { max-width: 1320px; margin: 0 auto; padding: 22px 44px 50px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+        .sh-crumb-path { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); margin-bottom: 12px; animation: shUp 0.7s 0.08s ease-out both; }
+        .sh-crumb-title { font-size: 54px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin: 0; animation: shUp 0.7s 0.08s ease-out both; }
+        .sh-amount-block { text-align: right; animation: shUp 0.7s 0.16s ease-out both; }
+        .sh-amount-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.92 0.02 268 / 0.65); margin-bottom: 8px; }
+        .sh-amount-value { font-size: 42px; font-weight: 700; letter-spacing: -0.03em; color: oklch(0.92 0.17 118); }
+
+        .sh-cart-panel { background: oklch(0.975 0.006 280); color: oklch(0.24 0.02 268); border-radius: 42px 42px 0 0; padding: 44px 0 0; }
+        .sh-cart-layout { max-width: 1320px; margin: 0 auto; padding: 0 44px 70px; display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.9fr); gap: 30px; align-items: start; }
+        .sh-main-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+        .sh-pay-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 20px; padding: 26px; animation: shIn 0.6s 0.06s ease-out both; }
+        .sh-pay-card-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.52 0.13 285); margin-bottom: 16px; }
+        .sh-pay-card-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+        .sh-brand-label { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.5 0.03 280); }
+
+        .sh-pay-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .sh-pay-method { display: flex; align-items: center; gap: 12px; width: 100%; font-family: Poppins, sans-serif; padding: 15px 16px; border-radius: 15px; cursor: pointer; transition: all 0.2s ease; color: oklch(0.24 0.02 268); border: 1px solid oklch(0.9 0.012 280); background: oklch(0.995 0.004 280); text-align: left; }
+        .sh-pay-method.active { border-color: oklch(0.52 0.13 285); background: oklch(0.975 0.012 285); }
+        .sh-pay-method-dot { width: 18px; height: 18px; flex: none; border-radius: 999px; background: oklch(1 0 0); border: 1px solid oklch(0.82 0.02 280); }
+        .sh-pay-method.active .sh-pay-method-dot { border: 5px solid oklch(0.48 0.13 268); }
+        .sh-pay-method-label { display: block; font-size: 13.5px; font-weight: 600; }
+        .sh-pay-method-note { display: block; font-size: 11.5px; color: oklch(0.52 0.02 280); margin-top: 3px; }
+
+        .sh-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; align-items: start; }
+        .sh-mono-input { font-family: 'IBM Plex Mono', monospace !important; letter-spacing: 0.08em; }
+        .sh-form-body { display: flex; flex-direction: column; gap: 15px; }
+        .sh-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .sh-form-group { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .sh-form-group label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.5 0.02 280); }
+        .sh-form-input { font-family: Poppins, sans-serif; font-size: 14.5px; padding: 15px; border-radius: 12px; border: 1px solid oklch(0.88 0.012 280); background: oklch(0.995 0.004 280); outline: none; color: oklch(0.24 0.02 268); transition: border-color 0.2s ease, box-shadow 0.2s ease; width: 100%; }
+        .sh-form-input:focus { border-color: oklch(0.52 0.13 285); box-shadow: 0 0 0 4px oklch(0.52 0.13 285 / 0.12); }
+
+        .sh-card-visual { position: relative; overflow: hidden; min-width: 0; height: 196px; border-radius: 20px; padding: 24px; color: oklch(0.98 0.01 268); background: linear-gradient(140deg, oklch(0.40 0.13 275) 0%, oklch(0.32 0.10 300) 55%, oklch(0.44 0.12 258) 100%); box-shadow: 0 26px 50px oklch(0.3 0.08 275 / 0.32); animation: shIn 0.65s 0.18s cubic-bezier(0.2,0.9,0.3,1) both; }
+        .sh-card-shine { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 40%, oklch(1 0 0 / 0.14) 50%, transparent 60%); animation: shShine 4.5s ease-in-out infinite; pointer-events: none; }
+        .sh-card-body { position: relative; display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
+        .sh-card-chip { width: 38px; height: 27px; border-radius: 6px; background: oklch(0.88 0.13 92); opacity: 0.9; display: inline-block; }
+        .sh-card-brand { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.75; }
+        .sh-card-number { font-family: 'IBM Plex Mono', monospace; font-size: 17px; letter-spacing: 0.16em; }
+        .sh-card-label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+        .sh-card-holder { display: block; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .sh-card-expiry { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+
+        .sh-wallet-card { text-align: center; padding: 40px 26px; }
+        .sh-wallet-icon { width: 54px; height: 54px; margin: 0 auto 18px; border-radius: 16px; background: oklch(0.95 0.02 285); color: oklch(0.42 0.12 285); font-size: 20px; display: flex; align-items: center; justify-content: center; }
+        .sh-wallet-title { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .sh-wallet-sub { font-size: 13.5px; line-height: 1.6; color: oklch(0.5 0.02 280); max-width: 42ch; margin: 0 auto; }
+
+        .sh-billing-box { padding: 16px 18px; border-radius: 14px; background: oklch(0.98 0.005 280); border: 1px solid oklch(0.93 0.01 280); font-size: 13.5px; line-height: 1.65; color: oklch(0.36 0.02 280); }
+
+        .sh-form-error-box { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: oklch(0.52 0.19 25); background: oklch(0.96 0.03 25); border: 1px solid oklch(0.86 0.07 25); border-radius: 13px; padding: 14px 16px; }
+
+        .sh-back-btn { font-size: 13px; font-weight: 500; padding: 15px 24px; border-radius: 999px; border: 1px solid oklch(0.88 0.012 280); color: oklch(0.35 0.02 280); white-space: nowrap; }
+        .sh-back-btn:hover { background: oklch(0.95 0.008 280); color: oklch(0.25 0.02 268); }
+        .sh-pay-btn { display: inline-flex; align-items: center; justify-content: center; gap: 11px; margin-left: auto; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 16px 34px; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); white-space: nowrap; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
+        .sh-pay-btn:hover:not(:disabled) { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-pay-btn:active:not(:disabled) { transform: scale(0.98); }
+        .sh-pay-spinner { width: 15px; height: 15px; border-radius: 999px; border: 2px solid oklch(1 0 0 / 0.35); border-top-color: oklch(0.99 0.01 268); animation: shSpin 0.7s linear infinite; display: inline-block; }
+        .sh-pay-disclaimer { font-size: 12px; line-height: 1.7; color: oklch(0.52 0.02 280); max-width: 62ch; }
+
+        .sh-summary-aside { position: sticky; top: 24px; min-width: 0; display: flex; flex-direction: column; gap: 16px; animation: shIn 0.7s 0.18s ease-out both; }
+        .sh-summary-card { position: relative; overflow: hidden; background: oklch(0.24 0.05 268); color: oklch(0.97 0.01 268); border-radius: 20px; padding: 26px; }
+        .sh-summary-glow { position: absolute; bottom: -80px; right: -60px; width: 240px; height: 240px; border-radius: 999px; background: radial-gradient(circle, oklch(0.92 0.17 118 / 0.24) 0%, transparent 68%); animation: shGlow 8s ease-in-out infinite; pointer-events: none; }
+        .sh-summary-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); margin-bottom: 20px; }
+        .sh-summary-rows { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; padding-bottom: 18px; border-bottom: 1px solid oklch(1 0 0 / 0.14); }
+        .sh-summary-row { display: flex; justify-content: space-between; gap: 12px; }
+        .sh-summary-row span:first-child { min-width: 0; color: oklch(0.9 0.01 268 / 0.82); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sh-summary-total-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 20px 0 4px; }
+        .sh-summary-total-label { font-size: 15px; font-weight: 600; }
+        .sh-summary-total-amount { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: oklch(0.92 0.17 118); }
+
+        .sh-trust-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 11px; }
+        .sh-trust-row { display: flex; align-items: center; gap: 11px; font-size: 13px; color: oklch(0.4 0.02 280); }
+        .sh-trust-icon { width: 20px; height: 20px; flex: none; border-radius: 999px; background: oklch(0.93 0.07 145); color: oklch(0.4 0.13 145); font-size: 11px; display: flex; align-items: center; justify-content: center; }
+
+        .sh-modal-check { width: 62px; height: 62px; margin: 0 auto 20px; border-radius: 999px; background: oklch(0.92 0.17 118); color: oklch(0.26 0.08 130); font-size: 26px; display: flex; align-items: center; justify-content: center; }
+        .sh-modal-title { font-size: 25px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 8px; }
+        .sh-modal-sub { font-size: 13.5px; line-height: 1.6; color: oklch(0.5 0.02 280); margin: 0 0 8px; }
+        .sh-modal-ref { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.42 0.11 285); margin-bottom: 26px; }
+        .sh-modal-actions { display: flex; gap: 10px; }
+        .sh-modal-keep { flex: 1; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 500; padding: 15px; border-radius: 999px; border: 1px solid oklch(0.88 0.012 280); background: transparent; color: oklch(0.3 0.02 268); text-align: center; }
+        .sh-modal-keep:hover { background: oklch(0.95 0.008 280); }
+        .sh-modal-view { flex: 1.2; text-align: center; font-size: 13.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 15px; border-radius: 999px; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); }
+        .sh-modal-view:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+
+        @@media (max-width: 900px) {
+            .sh-crumb-title { font-size: 38px; }
+            .sh-cart-layout { grid-template-columns: 1fr; }
+            .sh-summary-aside { position: static; }
+            .sh-form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+}
+
+<section class="sh-crumb">
+    <div>
+        <div class="sh-crumb-path"><a asp-controller="Home" asp-action="Index">Home</a> / <a asp-controller="Cart" asp-action="Index">Cart</a> / <a asp-controller="Order" asp-action="Checkout">Checkout</a> / Payment</div>
+        <h1 class="sh-crumb-title">Payment</h1>
+    </div>
+    <div class="sh-amount-block">
+        <div class="sh-amount-label">Amount due</div>
+        <div class="sh-amount-value">$@Model.Subtotal.ToString("N2")</div>
+    </div>
+</section>
+
+<section class="sh-cart-panel">
+    <div class="sh-cart-layout">
+
+        <div class="sh-main-col">
+
+            <div class="sh-pay-card">
+                <div class="sh-pay-card-label">Payment method</div>
+                <div class="sh-pay-methods" id="payMethods">
+                    <button type="button" class="sh-pay-method active" data-method="card">
+                        <span class="sh-pay-method-dot"></span>
+                        <span><span class="sh-pay-method-label">Card</span><span class="sh-pay-method-note">Visa, Mastercard, Amex</span></span>
+                    </button>
+                    <button type="button" class="sh-pay-method" data-method="paypal">
+                        <span class="sh-pay-method-dot"></span>
+                        <span><span class="sh-pay-method-label">PayPal</span><span class="sh-pay-method-note">Redirects to PayPal</span></span>
+                    </button>
+                    <button type="button" class="sh-pay-method" data-method="applepay">
+                        <span class="sh-pay-method-dot"></span>
+                        <span><span class="sh-pay-method-label">Apple Pay</span><span class="sh-pay-method-note">One-tap on device</span></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sh-card-grid" id="cardSection">
+                <div class="sh-pay-card">
+                    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:20px;">
+                        <h2 class="sh-pay-card-title">Card details</h2>
+                        <span class="sh-brand-label" id="brandLabel">CARD</span>
+                    </div>
+                    <div class="sh-form-body">
+                        <div class="sh-form-group">
+                            <label>Card number</label>
+                            <input id="fieldCard" class="sh-form-input sh-mono-input" placeholder="4242 4242 4242 4242" autocomplete="off" />
+                        </div>
+                        <div class="sh-form-group">
+                            <label>Name on card</label>
+                            <input id="fieldCardName" class="sh-form-input" placeholder="Jane Cooper" autocomplete="off" />
+                        </div>
+                        <div class="sh-form-row">
+                            <div class="sh-form-group">
+                                <label>Expiry</label>
+                                <input id="fieldExpiry" class="sh-form-input sh-mono-input" placeholder="MM / YY" autocomplete="off" />
+                            </div>
+                            <div class="sh-form-group">
+                                <label>CVC</label>
+                                <input id="fieldCvc" class="sh-form-input sh-mono-input" placeholder="123" autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sh-card-visual">
+                    <div class="sh-card-shine"></div>
+                    <div class="sh-card-body">
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                            <span class="sh-card-chip"></span>
+                            <span class="sh-card-brand" id="cardBrandDisplay">CARD</span>
+                        </div>
+                        <div class="sh-card-number" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+                        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:14px;">
+                            <span style="min-width:0;">
+                                <span class="sh-card-label">Card holder</span>
+                                <span class="sh-card-holder" id="cardHolderDisplay">YOUR NAME</span>
+                            </span>
+                            <span style="text-align:right;">
+                                <span class="sh-card-label">Expires</span>
+                                <span class="sh-card-expiry" id="cardExpiryDisplay">MM/YY</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sh-pay-card sh-wallet-card" id="walletSection" hidden>
+                <div class="sh-wallet-icon">↗</div>
+                <div class="sh-wallet-title" id="walletTitle">Continue with PayPal</div>
+                <div class="sh-wallet-sub">You'll be redirected to confirm $@Model.Subtotal.ToString("N2") securely, then returned here.</div>
+            </div>
+
+            <div class="sh-pay-card">
+                <h2 class="sh-pay-card-title" style="margin-bottom:16px;">Billing address</h2>
+                <div class="sh-billing-box">
+                    @Model.RecipientName, @Model.Address, @Model.City@(string.IsNullOrEmpty(Model.PhoneNumber) ? "" : $" · {Model.PhoneNumber}")
+                </div>
+            </div>
+
+            <div class="sh-form-error-box" id="errorBox" hidden></div>
+
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+                <a asp-controller="Order" asp-action="Checkout" class="sh-back-btn">&larr; Back to checkout</a>
+                <button type="button" class="sh-pay-btn" id="payBtn">
+                    <span class="sh-pay-spinner" id="paySpinner" hidden></span>
+                    <span id="payLabel">Pay $@Model.Subtotal.ToString("N2")</span>
+                </button>
+            </div>
+
+            <div class="sh-pay-disclaimer">This is a demo checkout — no real payment gateway is used. Card details stay in your browser and are never sent to our servers.</div>
+        </div>
+
+        <aside class="sh-summary-aside">
+            <div class="sh-summary-card">
+                <div class="sh-summary-glow"></div>
+                <div class="sh-summary-eyebrow">Paying for</div>
+                <div class="sh-summary-rows">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="sh-summary-row"><span>@item.ProductName &times; @item.Quantity</span><span>$@((item.Price * item.Quantity).ToString("N2"))</span></div>
+                    }
+                </div>
+                <div class="sh-summary-total-row">
+                    <span class="sh-summary-total-label">Amount due</span>
+                    <span class="sh-summary-total-amount">$@Model.Subtotal.ToString("N2")</span>
+                </div>
+            </div>
+
+            <div class="sh-trust-card">
+                <div class="sh-trust-row"><span class="sh-trust-icon">✓</span>3-D Secure verification</div>
+                <div class="sh-trust-row"><span class="sh-trust-icon">✓</span>Fraud monitoring on every charge</div>
+                <div class="sh-trust-row"><span class="sh-trust-icon">✓</span>Refunds back to source in 5 days</div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<div class="sh-modal-overlay" id="successModal">
+    <div class="sh-modal">
+        <div class="sh-modal-check">✓</div>
+        <div class="sh-modal-title">Payment received</div>
+        <p class="sh-modal-sub" id="successSub"></p>
+        <div class="sh-modal-ref" id="successRef"></div>
+        <div class="sh-modal-actions">
+            <a asp-controller="Home" asp-action="Index" class="sh-modal-keep">Keep shopping</a>
+            <a href="#" id="viewOrderLink" class="sh-modal-view">View order</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var state = { method: 'card', processing: false };
+            var AMOUNT_LABEL = @Html.Raw(System.Text.Json.JsonSerializer.Serialize("$" + Model.Subtotal.ToString("N2")));
+
+            var els = {
+                payMethods: document.getElementById('payMethods'),
+                cardSection: document.getElementById('cardSection'),
+                walletSection: document.getElementById('walletSection'),
+                walletTitle: document.getElementById('walletTitle'),
+                fieldCard: document.getElementById('fieldCard'),
+                fieldCardName: document.getElementById('fieldCardName'),
+                fieldExpiry: document.getElementById('fieldExpiry'),
+                fieldCvc: document.getElementById('fieldCvc'),
+                brandLabel: document.getElementById('brandLabel'),
+                cardBrandDisplay: document.getElementById('cardBrandDisplay'),
+                cardNumberDisplay: document.getElementById('cardNumberDisplay'),
+                cardHolderDisplay: document.getElementById('cardHolderDisplay'),
+                cardExpiryDisplay: document.getElementById('cardExpiryDisplay'),
+                errorBox: document.getElementById('errorBox'),
+                payBtn: document.getElementById('payBtn'),
+                paySpinner: document.getElementById('paySpinner'),
+                payLabel: document.getElementById('payLabel'),
+                successModal: document.getElementById('successModal'),
+                successSub: document.getElementById('successSub'),
+                successRef: document.getElementById('successRef'),
+                viewOrderLink: document.getElementById('viewOrderLink')
+            };
+
+            function brandOf(num) {
+                var d = num.replace(/\D/g, '');
+                if (/^4/.test(d)) return 'Visa';
+                if (/^5[1-5]/.test(d) || /^2[2-7]/.test(d)) return 'Mastercard';
+                if (/^3[47]/.test(d)) return 'Amex';
+                if (/^6/.test(d)) return 'Discover';
+                return 'Card';
+            }
+
+            function methodLabel(id) {
+                return { card: 'Card', paypal: 'PayPal', applepay: 'Apple Pay' }[id] || 'Card';
+            }
+
+            function updateCardVisual() {
+                var digits = els.fieldCard.value.replace(/\D/g, '');
+                var grouped = digits.length
+                    ? (digits.match(/.{1,4}/g) || []).join(' ').padEnd(19, '•').slice(0, 19)
+                    : '•••• •••• •••• ••••';
+                els.cardNumberDisplay.textContent = grouped;
+                els.cardHolderDisplay.textContent = els.fieldCardName.value.trim() ? els.fieldCardName.value.trim().toUpperCase() : 'YOUR NAME';
+                els.cardExpiryDisplay.textContent = els.fieldExpiry.value.trim() || 'MM/YY';
+                var brand = brandOf(els.fieldCard.value).toUpperCase();
+                els.cardBrandDisplay.textContent = brand;
+                els.brandLabel.textContent = brand;
+            }
+
+            els.fieldCard.addEventListener('input', function () {
+                var digits = els.fieldCard.value.replace(/\D/g, '').slice(0, 19);
+                els.fieldCard.value = (digits.match(/.{1,4}/g) || []).join(' ');
+                updateCardVisual();
+            });
+            els.fieldCardName.addEventListener('input', updateCardVisual);
+            els.fieldExpiry.addEventListener('input', function () {
+                var v = els.fieldExpiry.value.replace(/[^\d]/g, '').slice(0, 4);
+                if (v.length > 2) v = v.slice(0, 2) + ' / ' + v.slice(2);
+                els.fieldExpiry.value = v;
+                updateCardVisual();
+            });
+            els.fieldCvc.addEventListener('input', function () {
+                els.fieldCvc.value = els.fieldCvc.value.replace(/\D/g, '').slice(0, 4);
+            });
+
+            function updatePayLabel() {
+                if (state.processing) return;
+                els.payLabel.textContent = state.method === 'card' ? ('Pay ' + AMOUNT_LABEL) : ('Continue with ' + methodLabel(state.method));
+            }
+
+            els.payMethods.addEventListener('click', function (e) {
+                var btn = e.target.closest('.sh-pay-method');
+                if (!btn) return;
+                state.method = btn.getAttribute('data-method');
+                els.payMethods.querySelectorAll('.sh-pay-method').forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+
+                var isCard = state.method === 'card';
+                els.cardSection.style.display = isCard ? '' : 'none';
+                els.walletSection.hidden = isCard;
+                if (!isCard) els.walletTitle.textContent = 'Continue with ' + methodLabel(state.method);
+                hideError();
+                updatePayLabel();
+            });
+
+            function showError(msg) {
+                els.errorBox.textContent = msg;
+                els.errorBox.hidden = false;
+            }
+            function hideError() {
+                els.errorBox.hidden = true;
+            }
+
+            function validate() {
+                if (state.method !== 'card') return null;
+                var digits = els.fieldCard.value.replace(/\D/g, '');
+                if (digits.length < 13) return 'Enter a valid card number';
+                if (els.fieldCardName.value.trim().length < 2) return 'Enter the name on the card';
+                if (!/^\d{2}\s*\/?\s*\d{2}$/.test(els.fieldExpiry.value.trim())) return 'Enter the expiry as MM / YY';
+                if (!/^\d{3,4}$/.test(els.fieldCvc.value.trim())) return 'Enter the 3 or 4 digit CVC';
+                return null;
+            }
+
+            function setProcessing(on) {
+                state.processing = on;
+                els.payBtn.disabled = on;
+                els.paySpinner.hidden = !on;
+                els.payLabel.textContent = on ? 'Processing…' : (state.method === 'card' ? ('Pay ' + AMOUNT_LABEL) : ('Continue with ' + methodLabel(state.method)));
+            }
+
+            els.payBtn.addEventListener('click', function () {
+                if (state.processing) return;
+                var err = validate();
+                if (err) { showError(err); return; }
+                hideError();
+                setProcessing(true);
+
+                setTimeout(function () {
+                    var fd = new FormData();
+                    fd.append('__RequestVerificationToken', ShopHub.getToken());
+                    fetch('@Url.Action("ProcessPayment", "Order")', { method: 'POST', body: fd })
+                        .then(function (r) { return r.json(); })
+                        .then(function (res) {
+                            if (res.success) {
+                                els.successSub.textContent = 'Thanks! A confirmation for your order is ready.';
+                                els.successRef.textContent = 'Order SH-' + String(res.orderId).padStart(5, '0');
+                                els.viewOrderLink.href = '@Url.Action("OrderDetails", "Order")/' + res.orderId;
+                                els.successModal.classList.add('open');
+                            } else {
+                                setProcessing(false);
+                                showError(res.message || 'Payment could not be completed.');
+                                if (res.redirect) {
+                                    ShopHub.showToast(res.message, 5900);
+                                    setTimeout(function () { window.location.href = res.redirect; }, 1200);
+                                }
+                            }
+                        })
+                        .catch(function () {
+                            setProcessing(false);
+                            showError('A network error occurred. Please try again.');
+                        });
+                }, 1300);
+            });
+        })();
+    </script>
+}

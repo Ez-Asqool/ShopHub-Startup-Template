@@ -1,0 +1,160 @@
+@model myshop.Web.ViewModels.CheckoutVM
+@{
+    Layout = "_ShopHubLayout";
+    ViewData["Title"] = "ShopHub — Checkout";
+    var itemCount = Model.Items.Sum(i => i.Quantity);
+}
+
+@section Styles {
+    <style>
+        .sh-crumb { max-width: 1320px; margin: 0 auto; padding: 22px 44px 50px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+        .sh-crumb-path { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); margin-bottom: 12px; animation: shUp 0.7s 0.08s ease-out both; }
+        .sh-crumb-title { font-size: 54px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin: 0; animation: shUp 0.7s 0.08s ease-out both; }
+
+        .sh-steps { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; animation: shUp 0.7s 0.16s ease-out both; }
+        .sh-step { display: flex; align-items: center; gap: 9px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 16px; border-radius: 999px; white-space: nowrap; }
+        .sh-step-num { width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+        .sh-step.active { background: oklch(0.92 0.17 118); color: oklch(0.26 0.08 130); border: 1px solid oklch(0.92 0.17 118); }
+        .sh-step.active .sh-step-num { background: oklch(0.26 0.08 130); color: oklch(0.92 0.17 118); }
+        .sh-step.upcoming { background: oklch(1 0 0 / 0.12); color: oklch(0.95 0.01 268 / 0.7); border: 1px solid oklch(1 0 0 / 0.22); }
+        .sh-step.upcoming .sh-step-num { background: oklch(1 0 0 / 0.2); color: oklch(0.96 0.01 268); }
+
+        .sh-cart-panel { background: oklch(0.975 0.006 280); color: oklch(0.24 0.02 268); border-radius: 42px 42px 0 0; padding: 44px 0 0; }
+        .sh-cart-layout { max-width: 1320px; margin: 0 auto; padding: 0 44px 70px; display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.9fr); gap: 30px; align-items: start; }
+
+        .sh-delivery-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 20px; padding: 26px; animation: shIn 0.6s 0.06s ease-out both; }
+        .sh-delivery-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+        .sh-delivery-step-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.52 0.13 285); }
+        .sh-delivery-title { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+
+        .sh-form-body { display: flex; flex-direction: column; gap: 15px; }
+        .sh-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .sh-form-group { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .sh-form-group label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.5 0.02 280); }
+        .sh-form-input { font-family: Poppins, sans-serif; font-size: 14.5px; padding: 14px 15px; border-radius: 12px; border: 1px solid oklch(0.88 0.012 280); background: oklch(0.995 0.004 280); outline: none; color: oklch(0.24 0.02 268); transition: border-color 0.2s ease, box-shadow 0.2s ease; width: 100%; }
+        .sh-form-input:focus { border-color: oklch(0.52 0.13 285); box-shadow: 0 0 0 4px oklch(0.52 0.13 285 / 0.12); }
+        .sh-form-input.input-validation-error { border-color: oklch(0.7 0.16 25); }
+        .sh-field-error { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: oklch(0.52 0.19 25); }
+        .sh-form-error-box { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: oklch(0.52 0.19 25); background: oklch(0.96 0.03 25); border: 1px solid oklch(0.86 0.07 25); border-radius: 11px; padding: 12px 14px; margin-bottom: 16px; }
+        .sh-form-error-box ul { margin: 0; padding-left: 18px; }
+        .validation-summary-valid { display: none; }
+        .field-validation-valid { display: none; }
+        .field-validation-error { color: oklch(0.52 0.19 25); }
+
+        .sh-checkout-actions { margin-top: 20px; display: flex; align-items: center; }
+        .sh-checkout-btn { margin-left: auto; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 16px 34px; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); cursor: pointer; white-space: nowrap; transition: transform 0.2s ease, background 0.2s ease; }
+        .sh-checkout-btn:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-checkout-btn:active { transform: scale(0.98); }
+
+        .sh-summary-aside { position: sticky; top: 24px; min-width: 0; display: flex; flex-direction: column; gap: 16px; animation: shIn 0.7s 0.18s ease-out both; }
+        .sh-summary-card { position: relative; overflow: hidden; background: oklch(0.24 0.05 268); color: oklch(0.97 0.01 268); border-radius: 20px; padding: 26px; }
+        .sh-summary-glow { position: absolute; bottom: -80px; right: -60px; width: 240px; height: 240px; border-radius: 999px; background: radial-gradient(circle, oklch(0.92 0.17 118 / 0.24) 0%, transparent 68%); animation: shGlow 8s ease-in-out infinite; pointer-events: none; }
+        .sh-summary-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); margin-bottom: 20px; }
+        .sh-summary-rows { display: flex; flex-direction: column; gap: 13px; font-size: 14px; padding-bottom: 18px; border-bottom: 1px solid oklch(1 0 0 / 0.14); }
+        .sh-summary-row { display: flex; justify-content: space-between; gap: 12px; }
+        .sh-summary-row span:first-child { color: oklch(0.88 0.01 268 / 0.72); }
+        .sh-summary-total-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 20px 0 4px; }
+        .sh-summary-total-label { font-size: 15px; font-weight: 600; }
+        .sh-summary-total-amount { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; color: oklch(0.92 0.17 118); }
+        .sh-ship-note { margin-top: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.85 0.01 268 / 0.55); }
+
+        .sh-trust-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 11px; }
+        .sh-trust-row { display: flex; align-items: center; gap: 11px; font-size: 13px; color: oklch(0.4 0.02 280); }
+        .sh-trust-icon { width: 20px; height: 20px; flex: none; border-radius: 999px; background: oklch(0.93 0.07 145); color: oklch(0.4 0.13 145); font-size: 11px; display: flex; align-items: center; justify-content: center; }
+
+        @@media (max-width: 900px) {
+            .sh-crumb-title { font-size: 38px; }
+            .sh-cart-layout { grid-template-columns: 1fr; }
+            .sh-summary-aside { position: static; }
+            .sh-form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+}
+
+<section class="sh-crumb">
+    <div>
+        <div class="sh-crumb-path"><a asp-controller="Home" asp-action="Index">Home</a> / <a asp-controller="Cart" asp-action="Index">Cart</a> / Checkout</div>
+        <h1 class="sh-crumb-title">Checkout</h1>
+    </div>
+    <div class="sh-steps">
+        <span class="sh-step active"><span class="sh-step-num">1</span>Delivery</span>
+        <span class="sh-step upcoming"><span class="sh-step-num">2</span>Payment</span>
+    </div>
+</section>
+
+<section class="sh-cart-panel">
+    <form asp-controller="Order" asp-action="Checkout" method="post">
+        <div class="sh-cart-layout">
+
+            <div class="sh-delivery-card">
+                <div class="sh-delivery-head">
+                    <span class="sh-delivery-step-label">Step 1</span>
+                    <h2 class="sh-delivery-title">Contact &amp; delivery</h2>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="sh-form-error-box"></div>
+
+                <div class="sh-form-body">
+                    <div class="sh-form-row">
+                        <div class="sh-form-group">
+                            <label asp-for="RecipientName"></label>
+                            <input asp-for="RecipientName" class="sh-form-input" placeholder="Jane Cooper" required />
+                            <span asp-validation-for="RecipientName" class="sh-field-error"></span>
+                        </div>
+                        <div class="sh-form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" class="sh-form-input" placeholder="+20 100 000 0000" />
+                            <span asp-validation-for="PhoneNumber" class="sh-field-error"></span>
+                        </div>
+                    </div>
+                    <div class="sh-form-group">
+                        <label asp-for="Address"></label>
+                        <input asp-for="Address" class="sh-form-input" placeholder="123 Market Street" required />
+                        <span asp-validation-for="Address" class="sh-field-error"></span>
+                    </div>
+                    <div class="sh-form-group">
+                        <label asp-for="City"></label>
+                        <input asp-for="City" class="sh-form-input" placeholder="Cairo" required />
+                        <span asp-validation-for="City" class="sh-field-error"></span>
+                    </div>
+                </div>
+
+                <div class="sh-checkout-actions">
+                    <button type="submit" class="sh-checkout-btn">Continue to payment</button>
+                </div>
+            </div>
+
+            <aside class="sh-summary-aside">
+                <div class="sh-summary-card">
+                    <div class="sh-summary-glow"></div>
+                    <div class="sh-summary-eyebrow">Order summary</div>
+                    <div class="sh-summary-rows">
+                        <div class="sh-summary-row"><span>Subtotal (@itemCount items)</span><span>$@Model.Subtotal.ToString("N2")</span></div>
+                    </div>
+                    <div class="sh-summary-total-row">
+                        <span class="sh-summary-total-label">Order Total</span>
+                        <span class="sh-summary-total-amount">$@Model.Subtotal.ToString("N2")</span>
+                    </div>
+                    <div class="sh-ship-note">Payment is simulated for this demo</div>
+                </div>
+
+                <div class="sh-trust-card">
+                    <div class="sh-trust-row"><span class="sh-trust-icon">✓</span>Encrypted payment processing</div>
+                    <div class="sh-trust-row"><span class="sh-trust-icon">✓</span>30-day free returns</div>
+                    <div class="sh-trust-row"><span class="sh-trust-icon">✓</span>Tracked delivery on every order</div>
+                </div>
+            </aside>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    @if (ViewBag.ToastMessage != null)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                ShopHub.showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize((string)ViewBag.ToastMessage)), 5900);
+            });
+        </script>
+    }
+}

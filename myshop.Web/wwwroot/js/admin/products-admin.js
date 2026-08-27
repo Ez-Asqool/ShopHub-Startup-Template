@@ -12,7 +12,8 @@
         pageSize: 5,
         editingId: null,
         deleteId: null,
-        deleteName: ""
+        deleteName: "",
+        archived: false
     };
 
     var els = {
@@ -21,10 +22,13 @@
         pageSizeSelect: document.getElementById("pageSizeSelect"),
         openAddBtn: document.getElementById("openAddBtn"),
         emptyAddBtn: document.getElementById("emptyAddBtn"),
+        viewArchivedBtn: document.getElementById("viewArchivedBtn"),
         resultLabel: document.getElementById("resultLabel"),
         categoryChips: document.getElementById("categoryChips"),
         productRows: document.getElementById("productRows"),
         emptyState: document.getElementById("emptyState"),
+        emptyStateTitle: document.getElementById("emptyStateTitle"),
+        emptyStateSub: document.getElementById("emptyStateSub"),
         footLabel: document.getElementById("footLabel"),
         prevPageBtn: document.getElementById("prevPageBtn"),
         nextPageBtn: document.getElementById("nextPageBtn"),
@@ -53,6 +57,7 @@
         fieldName: document.getElementById("fieldName"),
         fieldDescription: document.getElementById("fieldDescription"),
         fieldPrice: document.getElementById("fieldPrice"),
+        fieldStock: document.getElementById("fieldStock"),
         fieldCategory: document.getElementById("fieldCategory"),
 
         deleteModalOverlay: document.getElementById("deleteModalOverlay"),
@@ -89,26 +94,29 @@
     function buildQuery() {
         var params = new URLSearchParams();
         if (state.query) params.set("search", state.query);
-        if (state.categoryId) params.set("categoryId", state.categoryId);
+        if (!state.archived && state.categoryId) params.set("categoryId", state.categoryId);
         params.set("page", state.page);
         params.set("pageSize", state.pageSize);
         return params.toString();
     }
 
     function loadList() {
-        fetch(BASE + "/GetList?" + buildQuery())
+        var endpoint = state.archived ? "/GetArchivedList?" : "/GetList?";
+        fetch(BASE + endpoint + buildQuery())
             .then(function (r) { return r.json(); })
             .then(renderList)
             .catch(function () { showToast("Failed to load products", true); });
     }
 
     function renderList(data) {
-        var stats = data.stats || {};
-        els.statTotalProducts.textContent = stats.totalProducts != null ? stats.totalProducts : "0";
-        els.statTotalProductsNote.textContent = (stats.categoriesCount || 0) + " categories";
-        els.statCatalogValue.textContent = money(stats.catalogValue || 0);
-        els.statAvgPrice.textContent = money(stats.avgPrice || 0);
-        els.statCategories.textContent = stats.categoriesCount != null ? stats.categoriesCount : "0";
+        if (data.stats) {
+            var stats = data.stats;
+            els.statTotalProducts.textContent = stats.totalProducts != null ? stats.totalProducts : "0";
+            els.statTotalProductsNote.textContent = (stats.categoriesCount || 0) + " categories";
+            els.statCatalogValue.textContent = money(stats.catalogValue || 0);
+            els.statAvgPrice.textContent = money(stats.avgPrice || 0);
+            els.statCategories.textContent = stats.categoriesCount != null ? stats.categoriesCount : "0";
+        }
 
         var items = data.items || [];
         var totalCount = data.totalCount || 0;
@@ -116,13 +124,16 @@
         var page = data.page || state.page;
         var pageCount = Math.max(1, Math.ceil(totalCount / pageSize));
 
-        var categoryLabel = state.categoryId
+        var categoryLabel = (!state.archived && state.categoryId)
             ? (els.categoryChips.querySelector('[data-category-id="' + state.categoryId + '"]') || {}).textContent
             : "";
-        els.resultLabel.textContent = totalCount + (totalCount === 1 ? " product" : " products") + (categoryLabel ? " in " + categoryLabel : "");
+        els.resultLabel.textContent = totalCount + (totalCount === 1 ? " product" : " products") + (categoryLabel ? " in " + categoryLabel : "") + (state.archived ? " archived" : "");
 
         els.productRows.innerHTML = "";
         els.emptyState.hidden = items.length !== 0;
+        els.emptyStateTitle.textContent = state.archived ? "No archived products" : "No products found";
+        els.emptyStateSub.textContent = state.archived ? "Products you archive will show up here." : "Try a different search or category filter.";
+        els.emptyAddBtn.hidden = state.archived;
 
         items.forEach(function (p) {
             var row = document.createElement("div");
@@ -132,16 +143,19 @@
                 ? '<div class="sh-thumb"><img src="/' + escapeHtml(p.img) + '" alt="" /></div>'
                 : '<div class="sh-thumb sh-thumb-empty"></div>';
 
+            var actionsHtml = state.archived
+                ? '<button type="button" class="sh-action-btn" data-restore="' + p.id + '" data-name="' + escapeHtml(p.name) + '">Restore</button>'
+                : '<button type="button" class="sh-action-btn" data-edit="' + p.id + '">Edit</button>' +
+                '<button type="button" class="sh-action-btn sh-action-btn-danger" data-delete="' + p.id + '" data-name="' + escapeHtml(p.name) + '">Delete</button>';
+
             row.innerHTML =
                 thumbHtml +
                 '<div><div class="sh-product-name">' + escapeHtml(p.name) + '</div><div class="sh-product-id">#' + p.id + '</div></div>' +
                 '<div class="sh-cell-desc">' + escapeHtml(p.description) + '</div>' +
                 '<div class="sh-cell-price">' + money(p.price) + '</div>' +
+                '<div class="sh-col-center">' + (p.stock != null ? p.stock : 0) + '</div>' +
                 '<div class="sh-col-center"><span class="sh-category-badge">' + escapeHtml(p.categoryName) + '</span></div>' +
-                '<div class="sh-cell-actions">' +
-                '<button type="button" class="sh-action-btn" data-edit="' + p.id + '">Edit</button>' +
-                '<button type="button" class="sh-action-btn sh-action-btn-danger" data-delete="' + p.id + '" data-name="' + escapeHtml(p.name) + '">Delete</button>' +
-                '</div>';
+                '<div class="sh-cell-actions">' + actionsHtml + '</div>';
 
             els.productRows.appendChild(row);
         });
@@ -216,7 +230,36 @@
         if (editBtn) { openEditModal(parseInt(editBtn.getAttribute("data-edit"), 10)); return; }
 
         var delBtn = e.target.closest("[data-delete]");
-        if (delBtn) { openDeleteModal(parseInt(delBtn.getAttribute("data-delete"), 10), delBtn.getAttribute("data-name")); }
+        if (delBtn) { openDeleteModal(parseInt(delBtn.getAttribute("data-delete"), 10), delBtn.getAttribute("data-name")); return; }
+
+        var restoreBtn = e.target.closest("[data-restore]");
+        if (restoreBtn) { restoreProduct(parseInt(restoreBtn.getAttribute("data-restore"), 10), restoreBtn.getAttribute("data-name")); }
+    });
+
+    function restoreProduct(id, name) {
+        fetch(BASE + "/Restore/" + id, { method: "POST" })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res.success) {
+                    showToast("Restored — " + name);
+                    loadList();
+                } else {
+                    showToast(res.message || "Could not restore product", true);
+                }
+            })
+            .catch(function () { showToast("A network error occurred.", true); });
+    }
+
+    els.viewArchivedBtn.addEventListener("click", function () {
+        state.archived = !state.archived;
+        state.page = 1;
+        els.viewArchivedBtn.textContent = state.archived ? "View active" : "View archived";
+        els.viewArchivedBtn.classList.toggle("active", state.archived);
+        els.openAddBtn.hidden = state.archived;
+        els.categoryChips.hidden = state.archived;
+        els.statsGrid = els.statsGrid || document.getElementById("statsGrid");
+        if (els.statsGrid) els.statsGrid.hidden = state.archived;
+        loadList();
     });
 
     function resetForm() {
@@ -253,6 +296,7 @@
                 els.fieldName.value = p.name || "";
                 els.fieldDescription.value = p.description || "";
                 els.fieldPrice.value = p.price != null ? p.price : "";
+                els.fieldStock.value = p.stock != null ? p.stock : "";
                 els.fieldCategory.value = p.categoryId != null ? p.categoryId : "";
                 if (p.img) {
                     els.imagePreview.src = "/" + p.img;
@@ -287,11 +331,13 @@
         var name = els.fieldName.value.trim();
         var description = els.fieldDescription.value.trim();
         var price = parseFloat(els.fieldPrice.value);
+        var stock = parseInt(els.fieldStock.value, 10);
         var categoryId = els.fieldCategory.value;
 
         if (name.length < 2) return "Enter a product name";
         if (description.length < 10) return "Add a description of at least 10 characters";
         if (!isFinite(price) || price <= 0) return "Enter a valid price";
+        if (!isFinite(stock) || stock < 0) return "Enter a valid stock quantity";
         if (!categoryId) return "Select a category";
 
         if (file) {
@@ -318,6 +364,7 @@
         formData.append("Name", els.fieldName.value.trim());
         formData.append("Description", els.fieldDescription.value.trim());
         formData.append("Price", els.fieldPrice.value);
+        formData.append("Stock", els.fieldStock.value);
         formData.append("CategoryId", els.fieldCategory.value);
         if (file) formData.append("file", file);
 
@@ -347,7 +394,7 @@
     function openDeleteModal(id, name) {
         state.deleteId = id;
         state.deleteName = name;
-        els.deleteSub.textContent = "“" + name + "” will be removed from the catalog. This can't be undone.";
+        els.deleteSub.textContent = "“" + name + "” will be archived and hidden from the catalog. You can restore it later from “View archived”.";
         els.deleteModalOverlay.hidden = false;
     }
     function closeDeleteModal() { els.deleteModalOverlay.hidden = true; }
@@ -364,10 +411,10 @@
             .then(function (res) {
                 closeDeleteModal();
                 if (res.success) {
-                    showToast("Deleted — " + state.deleteName);
+                    showToast("Archived — " + state.deleteName);
                     loadList();
                 } else {
-                    showToast(res.message || "Could not delete product", true);
+                    showToast(res.message || "Could not archive product", true);
                 }
             })
             .catch(function () {

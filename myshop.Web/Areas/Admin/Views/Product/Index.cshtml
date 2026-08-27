@@ -44,6 +44,7 @@
                 <option value="25">25</option>
             </select>
         </label>
+        <button type="button" id="viewArchivedBtn" class="sh-btn-secondary">View archived</button>
         <button type="button" id="openAddBtn" class="sh-btn-primary">+ Add product</button>
     </div>
 
@@ -64,6 +65,7 @@
             <div>Name</div>
             <div>Description</div>
             <div class="sh-col-center">Price</div>
+            <div class="sh-col-center">Stock</div>
             <div class="sh-col-center">Category</div>
             <div class="sh-col-center">Actions</div>
         </div>
@@ -71,8 +73,8 @@
     </div>
 
     <div id="emptyState" class="sh-empty" hidden>
-        <div class="sh-empty-title">No products found</div>
-        <div class="sh-empty-sub">Try a different search or category filter.</div>
+        <div class="sh-empty-title" id="emptyStateTitle">No products found</div>
+        <div class="sh-empty-sub" id="emptyStateSub">Try a different search or category filter.</div>
         <button type="button" id="emptyAddBtn" class="sh-btn-primary" style="margin-left:0;">+ Add product</button>
     </div>
 
@@ -128,6 +130,10 @@
                     <input id="fieldPrice" name="Price" class="sh-input" placeholder="129.00" />
                 </label>
                 <label class="sh-form-field">
+                    <span class="sh-label">Stock</span>
+                    <input id="fieldStock" name="Stock" class="sh-input" placeholder="0" />
+                </label>
+                <label class="sh-form-field">
                     <span class="sh-label">Category</span>
                     <select id="fieldCategory" name="CategoryId" class="sh-select">
                         <option value="">-- Select category --</option>
@@ -151,11 +157,11 @@
 
 <div id="deleteModalOverlay" class="sh-modal-overlay" hidden>
     <div class="sh-modal sh-modal-sm">
-        <div class="sh-confirm-title">Delete this product?</div>
+        <div class="sh-confirm-title">Archive this product?</div>
         <p class="sh-confirm-sub" id="deleteSub"></p>
         <div class="sh-confirm-actions">
             <button type="button" id="cancelDeleteBtn" class="sh-btn-secondary">Keep it</button>
-            <button type="button" id="confirmDeleteBtn" class="sh-btn-danger">Delete</button>
+            <button type="button" id="confirmDeleteBtn" class="sh-btn-danger">Archive</button>
         </div>
     </div>
 </div>

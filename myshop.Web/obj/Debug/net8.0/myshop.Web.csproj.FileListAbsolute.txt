@@ -1028,4 +1028,9 @@ D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\r
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.pdb
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\myshop.Web.genruntimeconfig.cache
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\ref\myshop.Web.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\MailKit.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\MimeKit.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 D:\IT\.NET Level2\Sprint1\ShopHub-Startup-Template\myshop.Web\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -412,7 +412,7 @@ html, body {
 .sh-table-wrap { overflow-x: auto; overflow-y: hidden; }
 
 .sh-table-cols {
-    grid-template-columns: 78px minmax(170px, 1.5fr) minmax(220px, 2.2fr) minmax(90px, 0.7fr) minmax(130px, 0.9fr) 190px;
+    grid-template-columns: 78px minmax(170px, 1.5fr) minmax(220px, 2.2fr) minmax(90px, 0.7fr) minmax(80px, 0.5fr) minmax(130px, 0.9fr) 190px;
 }
 
 .sh-table-cols-cat {
@@ -451,6 +451,15 @@ html, body {
     grid-template-columns: minmax(210px, 1.4fr) minmax(200px, 1.5fr) minmax(110px, 0.7fr) minmax(110px, 0.7fr) 280px;
 }
 
+.sh-table-cols-orders {
+    grid-template-columns: 90px minmax(170px, 1.3fr) minmax(110px, 0.8fr) 70px minmax(90px, 0.8fr) minmax(120px, 0.9fr) minmax(110px, 0.8fr) 100px;
+}
+
+.sh-table-head.sh-table-cols-orders,
+.sh-table-row.sh-table-cols-orders {
+    min-width: 980px;
+}
+
 .sh-user-name-cell { display: flex; align-items: center; gap: 13px; min-width: 0; }
 
 .sh-user-avatar {
@@ -481,6 +490,14 @@ html, body {
 .sh-pill-role-customer { background: oklch(0.95 0.01 280); color: oklch(0.45 0.02 280); }
 .sh-pill-status-active { background: oklch(0.93 0.07 145); color: oklch(0.4 0.13 145); }
 .sh-pill-status-locked { background: oklch(0.95 0.05 25); color: oklch(0.48 0.16 25); }
+
+.sh-pill-order-processing { background: oklch(0.93 0.05 268); color: oklch(0.42 0.13 268); }
+.sh-pill-order-shipped { background: oklch(0.92 0.08 285); color: oklch(0.45 0.15 285); }
+.sh-pill-order-delivered { background: oklch(0.93 0.07 145); color: oklch(0.4 0.13 145); }
+.sh-pill-order-cancelled { background: oklch(0.95 0.05 25); color: oklch(0.48 0.16 25); }
+.sh-pill-payment-pending { background: oklch(0.95 0.06 85); color: oklch(0.48 0.13 85); }
+.sh-pill-payment-paid { background: oklch(0.93 0.07 145); color: oklch(0.4 0.13 145); }
+.sh-pill-payment-failed { background: oklch(0.95 0.05 25); color: oklch(0.48 0.16 25); }
 
 .sh-action-btn-warn { border-color: oklch(0.7 0.13 70 / 0.5); color: oklch(0.52 0.13 70); }
 .sh-action-btn-warn:hover { background: oklch(0.7 0.13 70); border-color: oklch(0.7 0.13 70); color: oklch(0.99 0.01 70); }
@@ -768,7 +785,7 @@ html, body {
 .sh-textarea { resize: vertical; line-height: 1.6; }
 .sh-select { cursor: pointer; }
 
-.sh-form-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 15px; }
+.sh-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 15px; }
 
 .sh-form-error {
     font-family: 'IBM Plex Mono', monospace;
@@ -855,6 +872,26 @@ html, body {
 
 .sh-toast.show { opacity: 1; transform: translate(-50%, 0); }
 .sh-toast.sh-toast-error { background: oklch(0.58 0.19 25); color: oklch(0.99 0.01 25); box-shadow: 0 18px 40px oklch(0.3 0.15 25 / 0.35); }
+
+/* ---------- Order details modal ---------- */
+.sh-modal-lg { width: 680px; }
+
+.sh-order-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; margin-bottom: 22px; }
+.sh-order-detail-item { display: flex; flex-direction: column; gap: 5px; }
+.sh-order-detail-label { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.55 0.02 280); }
+.sh-order-detail-value { font-size: 14px; color: oklch(0.24 0.02 268); }
+
+.sh-order-items-wrap { border: 1px solid oklch(0.9 0.012 280); border-radius: 14px; overflow: hidden; margin-bottom: 18px; }
+.sh-order-item-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid oklch(0.94 0.008 280); }
+.sh-order-item-row:last-child { border-bottom: none; }
+.sh-order-item-thumb { width: 44px; height: 44px; flex: none; border-radius: 10px; object-fit: contain; background: oklch(0.96 0.008 280); padding: 4px; }
+.sh-order-item-name { font-size: 13.5px; font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sh-order-item-qty { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: oklch(0.5 0.02 280); flex: none; }
+.sh-order-item-total { font-size: 13.5px; font-weight: 700; flex: none; width: 80px; text-align: right; }
+
+.sh-order-total-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px; }
+.sh-order-total-label { font-size: 14px; font-weight: 600; color: oklch(0.42 0.03 280); }
+.sh-order-total-amount { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {

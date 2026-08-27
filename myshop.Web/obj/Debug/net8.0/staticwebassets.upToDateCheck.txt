@@ -113,6 +113,7 @@ wwwroot\img\user7-128x128.jpg
 wwwroot\img\user8-128x128.jpg
 wwwroot\js\.eslintrc.json
 wwwroot\js\admin\categories-admin.js
+wwwroot\js\admin\orders-admin.js
 wwwroot\js\admin\products-admin.js
 wwwroot\js\admin\users-admin.js
 wwwroot\js\adminlte.js

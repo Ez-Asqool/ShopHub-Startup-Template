@@ -1,0 +1,483 @@
+@using Microsoft.AspNetCore.Identity
+@model myshop.Web.ViewModels.ProductDetailsVM
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    Layout = "_ShopHubLayout";
+    ViewData["Title"] = Model.Product.Name + " — ShopHub";
+    var isSignedIn = SignInManager.IsSignedIn(User);
+    var p = Model.Product;
+    var maxQty = System.Math.Max(1, System.Math.Min(9, p.Stock));
+}
+
+@section Styles {
+    <style>
+        .sh-breadcrumb { max-width: 1320px; margin: 0 auto; padding: 14px 44px 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); }
+        .sh-breadcrumb a { color: oklch(0.92 0.17 118); }
+
+        .sh-pd { background: oklch(0.975 0.006 280); color: oklch(0.24 0.02 268); border-radius: 42px 42px 0 0; padding: 44px 0 0; }
+        .sh-pd-inner { max-width: 1320px; margin: 0 auto; padding: 0 44px 60px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; align-items: start; }
+
+        .sh-pd-img-wrap { position: relative; aspect-ratio: 1 / 1; border-radius: 22px; overflow: hidden; background-color: oklch(0.93 0.012 280); display: flex; align-items: center; justify-content: center; }
+        .sh-pd-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 24px; }
+
+        .sh-pd-cat { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: oklch(0.52 0.13 285); margin-bottom: 12px; }
+        .sh-pd-title { font-size: 42px; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 16px; text-wrap: balance; }
+
+        .sh-pd-rating-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+        .sh-pd-stars { font-family: 'IBM Plex Mono', monospace; font-size: 15px; letter-spacing: 0.14em; color: oklch(0.72 0.15 75); }
+        .sh-pd-avg { font-size: 15px; font-weight: 700; }
+        .sh-pd-stock { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; }
+        .sh-pd-stock.in { background: oklch(0.93 0.07 145); color: oklch(0.4 0.13 145); }
+        .sh-pd-stock.out { background: oklch(0.95 0.05 25); color: oklch(0.5 0.17 25); }
+
+        .sh-pd-price { font-size: 34px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 22px; }
+        .sh-pd-desc { font-size: 15.5px; line-height: 1.75; color: oklch(0.42 0.02 280); margin: 0 0 26px; max-width: 52ch; text-wrap: pretty; }
+
+        .sh-qty-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .sh-qty { display: flex; align-items: center; gap: 4px; background: oklch(0.965 0.006 280); border: 1px solid oklch(0.9 0.012 280); border-radius: 999px; padding: 5px; }
+        .sh-qty button { width: 36px; height: 36px; border-radius: 999px; border: none; background: transparent; color: oklch(0.3 0.02 268); font-size: 18px; line-height: 1; cursor: pointer; }
+        .sh-qty button:hover { background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); }
+        .sh-qty span { font-family: 'IBM Plex Mono', monospace; font-size: 14px; min-width: 28px; text-align: center; display: inline-block; }
+        .sh-pd-add { flex: 1 1 200px; font-family: Poppins, sans-serif; font-size: 13.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 17px 30px; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); cursor: pointer; white-space: nowrap; }
+        .sh-pd-add:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-pd-add:disabled { background: oklch(0.88 0.012 280); color: oklch(0.55 0.02 280); cursor: not-allowed; }
+
+        #reviews { max-width: 1320px; margin: 0 auto; padding: 30px 44px 70px; }
+        .sh-reviews-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+        .sh-write-toggle { font-family: Poppins, sans-serif; font-size: 12.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 14px 24px; border-radius: 999px; border: 1px solid oklch(0.48 0.13 268); background: transparent; color: oklch(0.4 0.13 268); cursor: pointer; white-space: nowrap; }
+        .sh-write-toggle:hover { background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); }
+
+        .sh-reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; align-items: start; }
+        .sh-reviews-side { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+
+        .sh-rating-card { position: relative; overflow: hidden; background: oklch(0.24 0.05 268); color: oklch(0.97 0.01 268); border-radius: 20px; padding: 28px; }
+        .sh-rating-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.92 0.17 118); margin-bottom: 18px; }
+        .sh-rating-num-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+        .sh-rating-num { font-size: 52px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; color: oklch(0.92 0.17 118); }
+        .sh-rating-outof { font-size: 15px; color: oklch(0.88 0.01 268 / 0.7); }
+        .sh-rating-stars { font-family: 'IBM Plex Mono', monospace; font-size: 17px; letter-spacing: 0.16em; color: oklch(0.88 0.13 90); margin-bottom: 8px; }
+        .sh-rating-count { font-size: 13.5px; color: oklch(0.88 0.01 268 / 0.72); padding-bottom: 20px; border-bottom: 1px solid oklch(1 0 0 / 0.14); }
+        .sh-breakdown { display: flex; flex-direction: column; gap: 11px; padding-top: 20px; }
+        .sh-breakdown-row { display: flex; align-items: center; gap: 12px; }
+        .sh-breakdown-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; width: 26px; color: oklch(0.9 0.01 268 / 0.8); }
+        .sh-breakdown-track { flex: 1; height: 7px; border-radius: 999px; background: oklch(1 0 0 / 0.14); overflow: hidden; }
+        .sh-breakdown-fill { display: block; height: 100%; border-radius: 999px; background: oklch(0.92 0.17 118); }
+        .sh-breakdown-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; width: 24px; text-align: right; color: oklch(0.9 0.01 268 / 0.8); }
+
+        .sh-write-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 20px; padding: 24px; display: none; }
+        .sh-write-card.open { display: block; }
+        .sh-write-title { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 18px; }
+        .sh-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+        .sh-field span { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.5 0.02 280); }
+        .sh-field textarea { font-family: Poppins, sans-serif; font-size: 14px; line-height: 1.6; padding: 13px 15px; border-radius: 12px; border: 1px solid oklch(0.88 0.012 280); background: oklch(0.995 0.004 280); outline: none; color: oklch(0.24 0.02 268); resize: vertical; }
+        .sh-field textarea:focus { border-color: oklch(0.52 0.13 285); }
+        .sh-star-picker { display: flex; gap: 6px; }
+        .sh-star-picker button { width: 40px; height: 40px; border-radius: 11px; cursor: pointer; font-size: 18px; line-height: 1; background: oklch(0.97 0.004 280); color: oklch(0.8 0.02 280); border: 1px solid oklch(0.91 0.012 280); }
+        .sh-star-picker button.active { background: oklch(0.96 0.09 85); color: oklch(0.68 0.16 70); border: 1px solid oklch(0.85 0.11 80); }
+        .sh-form-error { display: none; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: oklch(0.52 0.19 25); background: oklch(0.96 0.03 25); border: 1px solid oklch(0.86 0.07 25); border-radius: 11px; padding: 12px 14px; margin-bottom: 14px; }
+        .sh-form-submit { font-family: Poppins, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 15px; width: 100%; border-radius: 999px; border: none; background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); cursor: pointer; }
+        .sh-form-submit:hover { background: oklch(0.92 0.17 118); color: oklch(0.28 0.08 130); }
+        .sh-form-cancel { font-family: Poppins, sans-serif; font-size: 12.5px; font-weight: 500; padding: 12px; width: 100%; margin-top: 8px; border-radius: 999px; border: 1px solid oklch(0.88 0.012 280); background: transparent; color: oklch(0.42 0.03 280); cursor: pointer; }
+
+        .sh-review-list { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+        .sh-review-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 2px; }
+        .sh-chip-mini { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 15px; border-radius: 999px; cursor: pointer; white-space: nowrap; background: oklch(1 0 0); color: oklch(0.42 0.03 280); border: 1px solid oklch(0.9 0.012 280); }
+        .sh-chip-mini.active { background: oklch(0.48 0.13 268); color: oklch(0.99 0.01 268); border: 1px solid oklch(0.48 0.13 268); }
+        .sh-sort-label { margin-left: auto; display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.5 0.03 280); white-space: nowrap; }
+        .sh-sort-label select { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 9px 10px; border-radius: 9px; border: 1px solid oklch(0.89 0.012 280); background: oklch(1 0 0); color: oklch(0.3 0.02 268); cursor: pointer; }
+
+        .sh-review-card { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 18px; padding: 22px; min-width: 0; }
+        .sh-review-top { display: flex; align-items: flex-start; gap: 14px; }
+        .sh-review-avatar { width: 42px; height: 42px; flex: none; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: oklch(0.93 0.05 268); color: oklch(0.42 0.12 268); }
+        .sh-review-author-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .sh-review-name { font-size: 14.5px; font-weight: 600; }
+        .sh-review-you { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; background: oklch(0.93 0.07 145); color: oklch(0.4 0.13 145); }
+        .sh-review-date { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: oklch(0.55 0.02 280); white-space: nowrap; }
+        .sh-review-stars { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.12em; color: oklch(0.72 0.15 75); margin-top: 7px; }
+        .sh-review-body { margin: 14px 0 0; font-size: 14px; line-height: 1.7; color: oklch(0.4 0.02 280); text-wrap: pretty; white-space: pre-wrap; }
+        .sh-review-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .sh-review-actions button { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid oklch(0.89 0.012 280); background: transparent; color: oklch(0.42 0.03 280); cursor: pointer; }
+        .sh-review-actions button:hover { border-color: oklch(0.48 0.13 268); color: oklch(0.4 0.13 268); }
+        .sh-review-empty { background: oklch(1 0 0); border: 1px solid oklch(0.9 0.012 280); border-radius: 18px; padding: 60px 24px; text-align: center; }
+        .sh-review-empty-title { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+        .sh-review-empty-sub { font-size: 13.5px; color: oklch(0.5 0.02 280); }
+    </style>
+}
+
+<div class="sh-breadcrumb">
+    <a asp-controller="Home" asp-action="Index">Home</a> / <a asp-controller="Products" asp-action="Index">@p.CategoryName</a> / @p.Name
+</div>
+
+<section class="sh-pd">
+    <div class="sh-pd-inner">
+        <div class="sh-pd-img-wrap">
+            <img src="~/@(string.IsNullOrEmpty(p.Img) ? "img/default-150x150.png" : p.Img)" alt="@p.Name" />
+        </div>
+
+        <div>
+            <div class="sh-pd-cat">@p.CategoryName</div>
+            <h1 class="sh-pd-title">@p.Name</h1>
+
+            <div class="sh-pd-rating-row" id="pdRatingRow">
+                <span class="sh-pd-stars">@Html.Raw(StarsHtml((int)System.Math.Round(Model.Reviews.AverageRating)))</span>
+                <span class="sh-pd-avg">@Model.Reviews.AverageRating.ToString("0.0")</span>
+                <a href="#reviews" id="pdReviewCountLabel">@Model.Reviews.ReviewCount @(Model.Reviews.ReviewCount == 1 ? "review" : "reviews")</a>
+                <span class="sh-pd-stock @(p.Stock > 0 ? "in" : "out")">@(p.Stock > 0 ? (p.Stock <= 5 ? $"Only {p.Stock} left" : "In stock") : "Out of stock")</span>
+            </div>
+
+            <div class="sh-pd-price">$@p.Price.ToString("N2")</div>
+            <p class="sh-pd-desc">@p.Description</p>
+
+            @if (p.Stock > 0)
+            {
+                <div class="sh-qty-row">
+                    <div class="sh-qty">
+                        <button type="button" id="pdQtyDec">−</button>
+                        <span id="pdQty">1</span>
+                        <button type="button" id="pdQtyInc" data-max="@maxQty">+</button>
+                    </div>
+                    <button type="button" class="sh-pd-add" data-add-to-cart data-product-id="@p.Id" data-product-name="@p.Name" id="pdAddToCart">Add to cart</button>
+                </div>
+            }
+            else
+            {
+                <button type="button" class="sh-pd-add" disabled>Out of stock</button>
+            }
+        </div>
+    </div>
+
+    <div id="reviews">
+        <div class="sh-reviews-head">
+            <div>
+                <div class="sh-pd-cat">Ratings &amp; reviews</div>
+                <h2 class="sh-h2" style="margin:0;">What buyers say</h2>
+            </div>
+            @if (isSignedIn)
+            {
+                <button type="button" class="sh-write-toggle" id="writeToggle">Write a review</button>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Products", new { id = p.Id })" class="sh-write-toggle">Log in to review</a>
+            }
+        </div>
+
+        <div class="sh-reviews-grid">
+            <div class="sh-reviews-side">
+                <div class="sh-rating-card">
+                    <div class="sh-rating-eyebrow">Average rating</div>
+                    <div class="sh-rating-num-row">
+                        <span class="sh-rating-num" id="ratingNum">@Model.Reviews.AverageRating.ToString("0.0")</span>
+                        <span class="sh-rating-outof">out of 5</span>
+                    </div>
+                    <div class="sh-rating-stars" id="ratingStars">@Html.Raw(StarsHtml((int)System.Math.Round(Model.Reviews.AverageRating)))</div>
+                    <div class="sh-rating-count" id="ratingCount">@Model.Reviews.ReviewCount @(Model.Reviews.ReviewCount == 1 ? "review" : "reviews")</div>
+                    <div class="sh-breakdown" id="breakdown">
+                        @foreach (var b in Model.Reviews.Breakdown)
+                        {
+                            <div class="sh-breakdown-row">
+                                <span class="sh-breakdown-label">@(b.Stars)★</span>
+                                <span class="sh-breakdown-track"><span class="sh-breakdown-fill" style="width:@(b.Percentage)%;"></span></span>
+                                <span class="sh-breakdown-count">@b.Count</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (isSignedIn)
+                {
+                    <div class="sh-write-card" id="writeCard">
+                        <div class="sh-write-title" id="writeTitle">Write a review</div>
+                        <div class="sh-form-error" id="formError"></div>
+                        <div class="sh-field">
+                            <span>Your rating</span>
+                            <div class="sh-star-picker" id="starPicker">
+                                <button type="button" data-star="1">★</button>
+                                <button type="button" data-star="2">★</button>
+                                <button type="button" data-star="3">★</button>
+                                <button type="button" data-star="4">★</button>
+                                <button type="button" data-star="5">★</button>
+                            </div>
+                        </div>
+                        <label class="sh-field">
+                            <span>Your review</span>
+                            <textarea id="reviewBody" rows="4" placeholder="What did you think?"></textarea>
+                        </label>
+                        <button type="button" class="sh-form-submit" id="submitReview">Post review</button>
+                        <button type="button" class="sh-form-cancel" id="cancelReview">Cancel</button>
+                    </div>
+                }
+            </div>
+
+            <div class="sh-review-list">
+                <div class="sh-review-controls">
+                    <button type="button" class="sh-chip-mini active" data-filter="0">All ratings</button>
+                    <button type="button" class="sh-chip-mini" data-filter="5">5 stars</button>
+                    <button type="button" class="sh-chip-mini" data-filter="4">4 stars</button>
+                    <button type="button" class="sh-chip-mini" data-filter="3">3 stars</button>
+                    <button type="button" class="sh-chip-mini" data-filter="2">2 stars</button>
+                    <button type="button" class="sh-chip-mini" data-filter="1">1 star</button>
+                    <label class="sh-sort-label">
+                        Sort
+                        <select id="sortSelect">
+                            <option value="recent">Most recent</option>
+                            <option value="high">Highest rated</option>
+                            <option value="low">Lowest rated</option>
+                        </select>
+                    </label>
+                </div>
+                <div id="reviewList"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@functions {
+    string StarsHtml(int filled)
+    {
+        filled = System.Math.Clamp(filled, 0, 5);
+        return new string('★', filled) + new string('☆', 5 - filled);
+    }
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            var productId = @p.Id;
+            var isSignedIn = @(isSignedIn ? "true" : "false");
+            var allReviews = [];
+            var activeFilter = 0;
+            var sortMode = 'recent';
+            var formRating = 0;
+            var editingId = null;
+
+            function escapeHtml(s) {
+                return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+                });
+            }
+
+            function stars(n) {
+                n = Math.max(0, Math.min(5, Math.round(n)));
+                return '★'.repeat(n) + '☆'.repeat(5 - n);
+            }
+
+            function initials(name) {
+                return (name || '?').trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+            }
+
+            function renderSummary(data) {
+                document.getElementById('ratingNum').textContent = data.averageRating.toFixed(1);
+                document.getElementById('ratingStars').textContent = stars(data.averageRating);
+                document.getElementById('ratingCount').textContent = data.reviewCount + (data.reviewCount === 1 ? ' review' : ' reviews');
+                document.getElementById('pdReviewCountLabel').textContent = data.reviewCount + (data.reviewCount === 1 ? ' review' : ' reviews');
+                document.querySelector('#pdRatingRow .sh-pd-stars').textContent = stars(data.averageRating);
+                document.querySelector('#pdRatingRow .sh-pd-avg').textContent = data.averageRating.toFixed(1);
+
+                var breakdownEl = document.getElementById('breakdown');
+                breakdownEl.innerHTML = data.breakdown.map(function (b) {
+                    return '<div class="sh-breakdown-row">' +
+                        '<span class="sh-breakdown-label">' + b.stars + '★</span>' +
+                        '<span class="sh-breakdown-track"><span class="sh-breakdown-fill" style="width:' + b.percentage + '%;"></span></span>' +
+                        '<span class="sh-breakdown-count">' + b.count + '</span>' +
+                        '</div>';
+                }).join('');
+            }
+
+            function renderList() {
+                var list = allReviews.filter(function (r) { return activeFilter === 0 || r.rating === activeFilter; });
+                list.sort(function (a, b) {
+                    if (sortMode === 'high') return b.rating - a.rating;
+                    if (sortMode === 'low') return a.rating - b.rating;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+
+                var listEl = document.getElementById('reviewList');
+
+                if (list.length === 0) {
+                    listEl.innerHTML = '<div class="sh-review-empty"><div class="sh-review-empty-title">No reviews match that filter</div><div class="sh-review-empty-sub">Try "All ratings" to see every review.</div></div>';
+                    return;
+                }
+
+                listEl.innerHTML = list.map(function (r) {
+                    var actions = '';
+                    if (r.isOwnedByCurrentUser) {
+                        actions = '<div class="sh-review-actions">' +
+                            '<button type="button" data-edit="' + r.id + '">Edit</button>' +
+                            '<button type="button" data-delete="' + r.id + '">Delete</button>' +
+                            '</div>';
+                    }
+                    var youBadge = r.isOwnedByCurrentUser ? '<span class="sh-review-you">Your review</span>' : '';
+                    var date = new Date(r.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+
+                    return '<article class="sh-review-card" data-review-id="' + r.id + '">' +
+                        '<div class="sh-review-top">' +
+                        '<span class="sh-review-avatar">' + escapeHtml(initials(r.reviewerName)) + '</span>' +
+                        '<div style="flex:1;min-width:0;">' +
+                        '<div class="sh-review-author-row"><span class="sh-review-name">' + escapeHtml(r.reviewerName) + '</span>' + youBadge + '<span class="sh-review-date">' + date + '</span></div>' +
+                        '<div class="sh-review-stars">' + stars(r.rating) + '</div>' +
+                        '</div></div>' +
+                        '<p class="sh-review-body">' + escapeHtml(r.comment) + '</p>' +
+                        actions +
+                        '</article>';
+                }).join('');
+            }
+
+            function findMyReview() {
+                return allReviews.find(function (r) { return r.isOwnedByCurrentUser; }) || null;
+            }
+
+            function setFormRating(n) {
+                formRating = n;
+                document.querySelectorAll('#starPicker button').forEach(function (btn) {
+                    btn.classList.toggle('active', parseInt(btn.getAttribute('data-star'), 10) <= n);
+                });
+            }
+
+            function openWriteForm(review) {
+                var card = document.getElementById('writeCard');
+                if (!card) return;
+                editingId = review ? review.id : null;
+                document.getElementById('writeTitle').textContent = review ? 'Edit your review' : 'Write a review';
+                document.getElementById('reviewBody').value = review ? review.comment : '';
+                setFormRating(review ? review.rating : 0);
+                document.getElementById('formError').style.display = 'none';
+                card.classList.add('open');
+                var toggle = document.getElementById('writeToggle');
+                if (toggle) toggle.textContent = 'Close form';
+            }
+
+            function closeWriteForm() {
+                var card = document.getElementById('writeCard');
+                if (!card) return;
+                card.classList.remove('open');
+                editingId = null;
+                var toggle = document.getElementById('writeToggle');
+                if (toggle) toggle.textContent = 'Write a review';
+            }
+
+            async function refresh() {
+                var res = await fetch('/Reviews/GetForProduct?productId=' + productId);
+                var data = await res.json();
+                allReviews = data.reviews;
+                renderSummary(data);
+                renderList();
+
+                var mine = findMyReview();
+                var toggle = document.getElementById('writeToggle');
+                if (toggle && !document.getElementById('writeCard').classList.contains('open')) {
+                    toggle.textContent = mine ? 'Edit your review' : 'Write a review';
+                }
+            }
+
+            if (isSignedIn) {
+                document.getElementById('writeToggle').addEventListener('click', function () {
+                    var card = document.getElementById('writeCard');
+                    if (card.classList.contains('open')) {
+                        closeWriteForm();
+                    } else {
+                        openWriteForm(findMyReview());
+                    }
+                });
+
+                document.getElementById('cancelReview').addEventListener('click', closeWriteForm);
+
+                document.getElementById('starPicker').addEventListener('click', function (e) {
+                    var btn = e.target.closest('button[data-star]');
+                    if (!btn) return;
+                    setFormRating(parseInt(btn.getAttribute('data-star'), 10));
+                });
+
+                document.getElementById('submitReview').addEventListener('click', async function () {
+                    var body = document.getElementById('reviewBody').value.trim();
+                    var errorEl = document.getElementById('formError');
+
+                    if (formRating < 1) {
+                        errorEl.textContent = 'Choose a rating';
+                        errorEl.style.display = 'block';
+                        return;
+                    }
+                    if (body.length < 5) {
+                        errorEl.textContent = 'Write a few words about your experience';
+                        errorEl.style.display = 'block';
+                        return;
+                    }
+
+                    var url = editingId ? '/Reviews/Edit' : '/Reviews/Create';
+                    var fields = editingId
+                        ? { id: editingId, rating: formRating, comment: body }
+                        : { productId: productId, rating: formRating, comment: body };
+
+                    var ok = await window.ShopHub.postForm(url, fields);
+                    if (ok) {
+                        closeWriteForm();
+                        window.ShopHub.showToast(editingId ? 'Review updated' : 'Review posted — thank you');
+                        await refresh();
+                    } else {
+                        errorEl.textContent = 'Could not save your review. You may have already reviewed this product.';
+                        errorEl.style.display = 'block';
+                    }
+                });
+
+                document.getElementById('reviewList').addEventListener('click', async function (e) {
+                    var editBtn = e.target.closest('button[data-edit]');
+                    var delBtn = e.target.closest('button[data-delete]');
+
+                    if (editBtn) {
+                        var review = allReviews.find(function (r) { return String(r.id) === editBtn.getAttribute('data-edit'); });
+                        if (review) openWriteForm(review);
+                        document.getElementById('reviews').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+
+                    if (delBtn) {
+                        var ok = await window.ShopHub.postForm('/Reviews/Delete', { id: delBtn.getAttribute('data-delete') });
+                        if (ok) {
+                            window.ShopHub.showToast('Review deleted');
+                            await refresh();
+                        } else {
+                            window.ShopHub.showToast('Could not delete review');
+                        }
+                    }
+                });
+            }
+
+            document.querySelectorAll('.sh-chip-mini').forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    document.querySelectorAll('.sh-chip-mini').forEach(function (c) { c.classList.remove('active'); });
+                    chip.classList.add('active');
+                    activeFilter = parseInt(chip.getAttribute('data-filter'), 10);
+                    renderList();
+                });
+            });
+
+            document.getElementById('sortSelect').addEventListener('change', function (e) {
+                sortMode = e.target.value;
+                renderList();
+            });
+
+            var qtyEl = document.getElementById('pdQty');
+            var decBtn = document.getElementById('pdQtyDec');
+            var incBtn = document.getElementById('pdQtyInc');
+            var addBtn = document.getElementById('pdAddToCart');
+
+            if (qtyEl) {
+                var qty = 1;
+                var max = parseInt(incBtn.getAttribute('data-max'), 10) || 1;
+                addBtn.setAttribute('data-quantity', qty);
+
+                decBtn.addEventListener('click', function () {
+                    qty = Math.max(1, qty - 1);
+                    qtyEl.textContent = qty;
+                    addBtn.setAttribute('data-quantity', qty);
+                });
+                incBtn.addEventListener('click', function () {
+                    qty = Math.min(max, qty + 1);
+                    qtyEl.textContent = qty;
+                    addBtn.setAttribute('data-quantity', qty);
+                });
+            }
+
+            refresh();
+        })();
+    </script>
+}

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using myshop.Application.Contracts;
 using myshop.Domain.Constants;
 using myshop.Infrastructure.Identity;
 using myshop.Web.ViewModels;
@@ -12,11 +13,15 @@ namespace myshop.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailService _emailService;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -44,6 +49,17 @@ namespace myshop.Web.Controllers
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, Roles.Customer);
+
+                try
+                {
+                    var shopUrl = Url.Action("Index", "Home", null, Request.Scheme)!;
+                    await _emailService.SendWelcomeEmailAsync(user.Email!, user.Name, shopUrl);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to send welcome email to {Email}", user.Email);
+                }
+
                 TempData["RegisterSuccess"] = "Your account has been created successfully. Please log in.";
                 return RedirectToAction(nameof(Login));
             }
