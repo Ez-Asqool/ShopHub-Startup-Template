@@ -15,11 +15,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Stripe.net" Version="52.1.0" />
+    <PackageReference Include="MailKit" Version="4.17.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\myshop.Application\myshop.Application.csproj" />
     <ProjectReference Include="..\myshop.Domain\myshop.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Email\EmailTemplates\*.html" />
   </ItemGroup>
 
 </Project>

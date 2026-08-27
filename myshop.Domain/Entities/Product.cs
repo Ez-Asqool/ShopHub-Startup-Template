@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using myshop.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace myshop.Domain.Entities
 {
-    public class Product
+    public class Product : BaseEntity
     {
         public int Id { get; set; }
 
@@ -29,5 +30,7 @@ namespace myshop.Domain.Entities
         public int CategoryId { get; set; }
         [ValidateNever]
         public Category Category { get; set; }
+
+        public int Stock { get; set; }
     }
 }

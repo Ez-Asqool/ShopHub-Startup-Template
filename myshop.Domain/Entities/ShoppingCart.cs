@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using myshop.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace myshop.Domain.Entities
 {
-    public class ShoppingCart
+    public class ShoppingCart : BaseEntity
     {
         public int Id { get; set; }
 

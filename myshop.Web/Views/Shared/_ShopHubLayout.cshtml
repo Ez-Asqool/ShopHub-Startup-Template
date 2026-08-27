@@ -2,12 +2,14 @@
 @using myshop.Infrastructure.Identity
 @using myshop.Application.Contracts
 @using myshop.Application.Services.Category
+@using myshop.Domain.Constants
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject ICartService CartService
 @inject ICategoryService CategoryService
 @{
     var isSignedIn = SignInManager.IsSignedIn(User);
+    var isAdmin = isSignedIn && User.IsInRole(Roles.Admin);
     var userName = isSignedIn ? UserManager.GetUserName(User) : null;
     var cartCount = CartService.GetCart().Sum(c => c.Quantity);
     var footerCategories = (await CategoryService.GetAllCategoriesAsync()).Take(3).ToList();
@@ -94,15 +96,19 @@
             <a asp-controller="Home" asp-action="Index" asp-fragment="shop">About us</a>
             <a asp-controller="Home" asp-action="Index" asp-fragment="shop">Shop</a>
             <a asp-controller="Home" asp-action="Index" asp-fragment="shop">Contact</a>
+            @if (isSignedIn)
+            {
+                <a asp-controller="Order" asp-action="MyOrders">My Orders</a>
+            }
         </nav>
         <div class="sh-header-actions">
-            <div class="sh-search">
-                <span>⌕</span>
-                <input id="searchInput" placeholder="Search" autocomplete="off" />
-            </div>
             @if (isSignedIn)
             {
                 <span class="sh-hello">Hi, @userName</span>
+                @if (isAdmin)
+                {
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="sh-btn-ghost">Dashboard</a>
+                }
                 <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
                     <button type="submit" class="sh-btn-ghost">Log out</button>
                 </form>
@@ -174,11 +180,11 @@
         var toast = document.getElementById('toast');
         var toastTimer = null;
 
-        function showToast(msg) {
+        function showToast(msg, duration) {
             clearTimeout(toastTimer);
             toast.textContent = msg;
             toast.style.display = 'block';
-            toastTimer = setTimeout(function () { toast.style.display = 'none'; }, 1900);
+            toastTimer = setTimeout(function () { toast.style.display = 'none'; }, duration || 1900);
         }
 
         function setCartCount(n) {
@@ -206,10 +212,11 @@
             }
         }
 
-        async function addToCart(productId, name) {
-            var ok = await postForm('/Cart/AddToCart', { productId: productId, quantity: 1 });
+        async function addToCart(productId, name, quantity) {
+            quantity = quantity || 1;
+            var ok = await postForm('/Cart/AddToCart', { productId: productId, quantity: quantity });
             if (ok) {
-                bumpCartCount(1);
+                bumpCartCount(quantity);
                 showToast('Added — ' + name);
             } else {
                 showToast('Could not add to cart');
@@ -220,19 +227,8 @@
         document.body.addEventListener('click', function (e) {
             var btn = e.target.closest('[data-add-to-cart]');
             if (!btn) return;
-            addToCart(btn.getAttribute('data-product-id'), btn.getAttribute('data-product-name'));
+            addToCart(btn.getAttribute('data-product-id'), btn.getAttribute('data-product-name'), parseInt(btn.getAttribute('data-quantity'), 10) || 1);
         });
-
-        var searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('keydown', function (e) {
-                if (e.key !== 'Enter') return;
-                if (!document.getElementById('productGrid')) {
-                    e.preventDefault();
-                    window.location.href = '/?search=' + encodeURIComponent(searchInput.value) + '#shop';
-                }
-            });
-        }
 
         return {
             showToast: showToast,

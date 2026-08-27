@@ -1,0 +1,101 @@
+@{
+    Layout = "_AdminLayout";
+    ViewBag.PageTitle = "Orders management";
+}
+
+<div class="sh-stats-grid" id="statsGrid">
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Total orders</div>
+        <div class="sh-stat-value" id="statTotalOrders">—</div>
+        <div class="sh-stat-note">&nbsp;</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Total revenue</div>
+        <div class="sh-stat-value" id="statRevenue">—</div>
+        <div class="sh-stat-note">Sum of all order totals</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Processing</div>
+        <div class="sh-stat-value" id="statProcessing">—</div>
+        <div class="sh-stat-note">Awaiting fulfillment</div>
+    </div>
+    <div class="sh-stat-card">
+        <div class="sh-stat-label">Delivered</div>
+        <div class="sh-stat-value" id="statDelivered">—</div>
+        <div class="sh-stat-note">Completed orders</div>
+    </div>
+</div>
+
+<div class="sh-panel">
+    <div class="sh-toolbar">
+        <div class="sh-search">
+            <span class="sh-search-icon">&#8981;</span>
+            <input id="searchInput" class="sh-search-input" placeholder="Search order # or recipient name" autocomplete="off" />
+            <button type="button" id="clearSearchBtn" class="sh-search-clear" hidden>&#10005;</button>
+        </div>
+        <label class="sh-pagesize">
+            Show
+            <select id="pageSizeSelect" class="sh-pagesize-select">
+                <option value="6">6</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="sh-filter-row">
+        <div class="sh-result-label" id="resultLabel">&nbsp;</div>
+        <div class="sh-chips" id="statusChips">
+            <button type="button" class="sh-chip active" data-status="">All</button>
+            <button type="button" class="sh-chip" data-status="Processing">Processing</button>
+            <button type="button" class="sh-chip" data-status="Shipped">Shipped</button>
+            <button type="button" class="sh-chip" data-status="Delivered">Delivered</button>
+            <button type="button" class="sh-chip" data-status="Cancelled">Cancelled</button>
+        </div>
+    </div>
+
+    <div class="sh-table-wrap">
+        <div class="sh-table-head sh-table-cols-orders">
+            <div>Order</div>
+            <div>Recipient</div>
+            <div>City</div>
+            <div class="sh-col-center">Items</div>
+            <div class="sh-col-center">Total</div>
+            <div class="sh-col-center">Status</div>
+            <div class="sh-col-center">Payment</div>
+            <div class="sh-col-center">Actions</div>
+        </div>
+        <div id="orderRows"></div>
+    </div>
+
+    <div id="emptyState" class="sh-empty" hidden>
+        <div class="sh-empty-title">No orders found</div>
+        <div class="sh-empty-sub">Try a different search or status filter.</div>
+    </div>
+
+    <div class="sh-pagination">
+        <div class="sh-foot-label" id="footLabel">&nbsp;</div>
+        <div class="sh-page-controls">
+            <button type="button" id="prevPageBtn" class="sh-step-btn">Prev</button>
+            <div class="sh-page-controls" id="pageNumbers"></div>
+            <button type="button" id="nextPageBtn" class="sh-step-btn">Next</button>
+        </div>
+    </div>
+</div>
+
+<div id="orderDetailsModalOverlay" class="sh-modal-overlay" hidden>
+    <div class="sh-modal sh-modal-lg" id="orderDetailsModal">
+        <div class="sh-modal-head">
+            <div>
+                <div class="sh-modal-kicker" id="detailsKicker">Order</div>
+                <h3 class="sh-modal-title" id="detailsTitle">Order details</h3>
+            </div>
+            <button type="button" class="sh-modal-close" id="closeDetailsBtn">&#10005;</button>
+        </div>
+        <div id="detailsBody"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin/orders-admin.js" asp-append-version="true"></script>
+}

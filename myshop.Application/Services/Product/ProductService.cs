@@ -41,6 +41,12 @@ namespace myshop.Application.Services.Product
             return _mapper.Map<IEnumerable<ProductDto>>(products);
         }
 
+        public async Task<IEnumerable<ProductDto>> GetProductsByIdsAsync(IEnumerable<int> ids)
+        {
+            var products = await _productRepository.GetByIdsAsync(ids);
+            return _mapper.Map<IEnumerable<ProductDto>>(products);
+        }
+
         public async Task<PagedResult<ProductDto>> GetProductsPagedAsync(string? search, string? sortBy, int? categoryId, int pageNumber, int pageSize)
         {
             if (pageNumber < 1)
@@ -168,10 +174,38 @@ namespace myshop.Application.Services.Product
             if (existing == null)
                 return ProductOperationResult.NotFound;
 
-            if (!string.IsNullOrEmpty(existing.Img))
-                _fileService.DeleteImage(existing.Img);
-
             _productRepository.Remove(existing);
+            await _unitOfWork.SaveChangesAsync();
+            return ProductOperationResult.Success;
+        }
+
+        public async Task<PagedResult<ProductDto>> GetArchivedProductsPagedAsync(string? search, int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1)
+                pageNumber = 1;
+
+            if (pageSize < 1)
+                pageSize = 6;
+
+            var (items, totalCount) = await _productRepository.GetArchivedPagedAsync(search, pageNumber, pageSize);
+
+            return new PagedResult<ProductDto>
+            {
+                Items = _mapper.Map<IEnumerable<ProductDto>>(items),
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+        public async Task<ProductOperationResult> RestoreProductAsync(int id)
+        {
+            var existing = await _productRepository.GetByIdIncludingDeletedAsync(id);
+            if (existing == null || !existing.IsDeleted)
+                return ProductOperationResult.NotFound;
+
+            existing.IsDeleted = false;
+            _productRepository.Update(existing);
             await _unitOfWork.SaveChangesAsync();
             return ProductOperationResult.Success;
         }

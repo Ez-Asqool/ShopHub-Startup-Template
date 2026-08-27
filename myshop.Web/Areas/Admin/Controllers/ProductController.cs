@@ -52,7 +52,7 @@ namespace myshop.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ProductCreateDto dto, IFormFile? file)
         {
-            var validationError = ValidateProductFields(dto.Name, dto.Description, dto.Price);
+            var validationError = ValidateProductFields(dto.Name, dto.Description, dto.Price, dto.Stock);
             if (validationError != null)
                 return Json(new { success = false, message = validationError });
 
@@ -68,7 +68,7 @@ namespace myshop.Web.Areas.Admin.Controllers
         {
             dto.Id = id;
 
-            var validationError = ValidateProductFields(dto.Name, dto.Description, dto.Price);
+            var validationError = ValidateProductFields(dto.Name, dto.Description, dto.Price, dto.Stock);
             if (validationError != null)
                 return Json(new { success = false, message = validationError });
 
@@ -90,10 +90,35 @@ namespace myshop.Web.Areas.Admin.Controllers
             if (result == ProductOperationResult.NotFound)
                 return Json(new { success = false, message = "Error while deleting" });
 
-            return Json(new { success = true, message = "Product deleted" });
+            return Json(new { success = true, message = "Product archived" });
         }
 
-        private static string? ValidateProductFields(string? name, string? description, decimal price)
+        [HttpGet]
+        public async Task<IActionResult> GetArchivedList(string? search, int page = 1, int pageSize = 5)
+        {
+            var paged = await _productService.GetArchivedProductsPagedAsync(search, page, pageSize);
+
+            return Json(new
+            {
+                items = paged.Items,
+                totalCount = paged.TotalCount,
+                page = paged.PageNumber,
+                pageSize = paged.PageSize
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var result = await _productService.RestoreProductAsync(id);
+
+            if (result == ProductOperationResult.NotFound)
+                return Json(new { success = false, message = "This product is not archived." });
+
+            return Json(new { success = true, message = "Product restored" });
+        }
+
+        private static string? ValidateProductFields(string? name, string? description, decimal price, int stock)
         {
             if (string.IsNullOrWhiteSpace(name) || name.Trim().Length < 2)
                 return "Enter a product name";
@@ -101,6 +126,8 @@ namespace myshop.Web.Areas.Admin.Controllers
                 return "Add a description of at least 10 characters";
             if (price <= 0)
                 return "Enter a valid price";
+            if (stock < 0)
+                return "Stock cannot be negative";
             return null;
         }
 

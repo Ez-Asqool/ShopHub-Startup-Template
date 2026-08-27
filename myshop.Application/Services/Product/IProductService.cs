@@ -22,6 +22,7 @@ namespace myshop.Application.Services.Product
     public interface IProductService
     {
         Task<IEnumerable<ProductDto>> GetAllProductsAsync();
+        Task<IEnumerable<ProductDto>> GetProductsByIdsAsync(IEnumerable<int> ids);
         Task<PagedResult<ProductDto>> GetProductsPagedAsync(string? search, string? sortBy, int? categoryId, int pageNumber, int pageSize);
         Task<ProductDto?> GetProductByIdAsync(int id);
         Task<ProductUpdateDto?> GetProductForEditAsync(int id);
@@ -30,6 +31,8 @@ namespace myshop.Application.Services.Product
         Task<ProductOperationResult> DeleteProductAsync(int id);
         Task<IEnumerable<CategoryLookupDto>> GetCategoriesForDropdownAsync();
         Task<ProductStatsDto> GetStatsAsync();
+        Task<PagedResult<ProductDto>> GetArchivedProductsPagedAsync(string? search, int pageNumber, int pageSize);
+        Task<ProductOperationResult> RestoreProductAsync(int id);
 
     }
 }

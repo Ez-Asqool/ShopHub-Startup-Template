@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using myshop.Domain.Common;
 
 namespace myshop.Domain.Entities
 {
-    public class OrderDetail
+    public class OrderDetail : BaseEntity
     {
         public int Id { get; set; }
 
@@ -19,10 +15,8 @@ namespace myshop.Domain.Entities
         [ValidateNever]
         public Product Product { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
 
-        public int Count { get; set; }
-
-
+        public int Quantity { get; set; }
     }
 }
